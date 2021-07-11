@@ -1,5 +1,6 @@
 import { Component, createRef, RefObject } from "react";
 import { GameState, Move } from "../game/reversi";
+import MuteButton from "./MuteButton";
 
 const SOUNDS = {
   burp1: "/Burp 1.wav",
@@ -16,7 +17,8 @@ const SOUNDS = {
 };
 type Sound = keyof typeof SOUNDS;
 
-type Props = { gameState: GameState };
+type Props = { gameState: GameState; muted: boolean; toggleMute: () => void };
+
 export default class GameAudio extends Component<Props, {}> {
   sounds: RefObject<HTMLDivElement>;
 
@@ -34,7 +36,6 @@ export default class GameAudio extends Component<Props, {}> {
   }
 
   didMove(prev?: Move, curr?: Move) {
-    console.log(prev, curr);
     if (curr && curr.length) {
       if (prev && prev.length) {
         return curr[0].s !== prev[0].s;
@@ -53,10 +54,13 @@ export default class GameAudio extends Component<Props, {}> {
   }
 
   play(id: Sound) {
+    if (this.props.muted) {
+      return;
+    }
+
     const sound = this.sounds.current?.querySelector(
       `#${id}`
     ) as HTMLAudioElement;
-    console.log(sound);
     if (sound) {
       sound.currentTime = 0;
       sound.play();
@@ -65,10 +69,13 @@ export default class GameAudio extends Component<Props, {}> {
 
   render() {
     return (
-      <div ref={this.sounds} style={{ display: "none" }}>
-        {Object.entries(SOUNDS).map(([id, src], i) => (
-          <audio key={i} id={id} src={src} />
-        ))}
+      <div>
+        <MuteButton muted={this.props.muted} onClick={this.props.toggleMute} />
+        <div ref={this.sounds} style={{ display: "none" }}>
+          {Object.entries(SOUNDS).map(([id, src], i) => (
+            <audio key={i} id={id} src={src} />
+          ))}
+        </div>
       </div>
     );
   }
