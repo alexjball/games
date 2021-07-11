@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useReversi } from "../game/duck";
 import GameTable from "./GameTable";
 import GameAudio from "./GameAudio";
+import ConfirmClose from "./ConfirmClose";
 
 export default function GameContainer() {
   const [gameState, dispatch] = useReversi();
@@ -19,6 +20,7 @@ export default function GameContainer() {
 
   return (
     <div>
+      <ConfirmClose gameState={gameState} />
       <GameAudio gameState={gameState} />
       <GameTable
         gamestate={gameState}
