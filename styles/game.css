@@ -26,7 +26,38 @@
   flex-direction: column;
   height: 100vh;
   padding: 1em;
+.top-bar {
+  display: flex;
+  align-items: baseline;
+  align-content: flex-end;
+  flex-wrap: wrap;
+  max-width: 750px;
+  height: 70px;
+  padding-bottom: 5px;
   margin: auto;
+  border-bottom: solid 1px var(--primary-text-color);
+}
+
+.logo {
+  font-size: 2rem;
+  flex: 1;
+}
+
+.logo span {
+  color: var(--foreground-color);
+}
+
+.link {
+  transition: transform 0.2s;
+  margin-left: 1.1rem;
+}
+
+.link:hover {
+  transform: scale(1.1);
+}
+
+.link:active {
+  transform: scale(0.9);
 }
 
 .control {
