@@ -3,9 +3,11 @@ export type SquareState = "empty" | Stone;
 export type Row = SquareState[];
 export type Location = [number, number];
 export interface GameState {
+  state: ReversiState;
   board: Row[];
   currentStone: Stone;
   validMoves: Location[];
+  lastMove?: Move;
   blackScore: number;
   whiteScore: number;
 }
@@ -17,7 +19,7 @@ export type NeighborVisitor = (
   s: SquareState
 ) => void;
 export type BoardVisitor = (r: number, c: number, s: SquareState) => void;
-
+export type Move = { r: number; c: number; s: Stone }[];
 export const otherStone = (a: Stone): Stone =>
   a === "black" ? "white" : "black";
 
@@ -33,17 +35,18 @@ export class Board {
     this.squares = this.empty();
   }
 
-  move(a: Stone, r: number, c: number) {
-    let flipCount = 0;
+  move(a: Stone, r: number, c: number): Move {
+    let move: Move = [];
     this.forEachNeighbor(r, c, (dR, dC, s) => {
       this.getFlipsInDirection(a, r, c, dR, dC).forEach(([r, c]) => {
-        const s = this.squares[r][c];
-        this.squares[r][c] = otherStone(s as Stone);
-        flipCount++;
+        const s = otherStone(this.squares[r][c] as Stone);
+        this.squares[r][c] = s;
+        move.push({ r, c, s });
       });
     });
-    if (flipCount > 0) {
+    if (move.length > 0) {
       this.squares[r][c] = a;
+      return [{ r, c, s: a }, ...move];
     } else {
       throw Error(`invalid move: ${a}, r ${r}, c ${c}`);
     }
@@ -173,6 +176,19 @@ export class Reversi {
   validMoves: Location[] = [];
   blackScore: number = 0;
   whiteScore: number = 0;
+  lastMove?: Move;
+
+  toJSON(): GameState {
+    return {
+      blackScore: this.blackScore,
+      whiteScore: this.whiteScore,
+      board: this.board.squares.map((r) => [...r]),
+      currentStone: this.currentStone,
+      validMoves: this.validMoves.map((l) => [...l]),
+      lastMove: this.lastMove?.map((m) => ({ ...m })),
+      state: this.state,
+    };
+  }
 
   public get state(): ReversiState {
     const totalScore = this.blackScore + this.whiteScore,
@@ -199,18 +215,20 @@ export class Reversi {
     s[4][3] = "white";
     s[4][4] = "black";
 
+    this.lastMove = undefined;
     this.currentStone = firstStone;
     this.updateScore();
     this.updateValidMoves();
   }
 
   pass() {
+    this.lastMove = [];
     this.currentStone = otherStone(this.currentStone);
     this.updateValidMoves();
   }
 
   move(r: number, c: number) {
-    this.board.move(this.currentStone, r, c);
+    this.lastMove = this.board.move(this.currentStone, r, c);
     this.currentStone = otherStone(this.currentStone);
     this.updateScore();
     this.updateValidMoves();
@@ -253,4 +271,10 @@ export class Reversi {
     board:\n${this.board.toString()}
     `;
   }
+}
+
+export function initialGameState(): GameState {
+  const game = new Reversi();
+  game.newGame("black");
+  return game.toJSON();
 }

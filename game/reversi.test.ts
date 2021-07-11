@@ -196,6 +196,40 @@ describe("Reversi", () => {
     r.newGame("black");
     expect(r.toString()).toBeDefined();
   });
+
+  it("copies to plain JSON", () => {
+    r.newGame("black");
+    r.move(5, 3);
+
+    const json = r.toJSON();
+    expect(json).toMatchObject({
+      whiteScore: 1,
+      blackScore: 4,
+      state: "in-progress",
+      currentStone: "white",
+    });
+    expect(json.board).toBeDefined();
+    expect(json.board).not.toBe(r.board.squares);
+    expect(json.validMoves).toBeDefined();
+    expect(json.validMoves).not.toBe(r.validMoves);
+    expect(json.lastMove).toBeDefined();
+    expect(json.lastMove).not.toBe(r.lastMove);
+  });
+
+  it("tracks the last move", () => {
+    r.newGame("black");
+    expect(r.lastMove).toBeUndefined();
+
+    r.pass();
+    expect(r.lastMove).toEqual([]);
+
+    r.newGame("black");
+    r.move(5, 3);
+    expect(r.lastMove).toEqual([
+      { r: 5, c: 3, s: "black" },
+      { r: 4, c: 3, s: "black" },
+    ]);
+  });
 });
 
 function expectStone(b: Board, s: Stone, locations: Location[]) {
