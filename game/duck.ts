@@ -57,6 +57,10 @@ class Duck {
 }
 
 export function useReversi() {
-  const [duck] = useState(() => new Duck());
+  const [duck] = useState(() => {
+    const d = new Duck();
+    d.newGame();
+    return d;
+  });
   return useReducer(duck.reducer, duck.state);
 }
