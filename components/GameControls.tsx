@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { GameState } from "../game/reversi";
 import StonePiece from "./StonePiece";
 
@@ -31,13 +31,25 @@ export function ControlPanel(props: ControlPanelProps) {
 
   return (
     <div style={style}>
-      <Control title="new game" onclick={newGame} />
+      <NewGame gamestate={gamestate} newGame={newGame} />
       <Control title="show available moves" onclick={setShouldShowValidMoves} />
       <Control title="show last move" onclick={setShouldShowLastMove} />
       <Control title="pass" onclick={pass} />
       <ScoreDisplay gamestate={gamestate} />
     </div>
   );
+}
+
+function NewGame(props: { gamestate: GameState; newGame: () => void }) {
+  const newGame = useCallback(() => {
+    if (
+      props.gamestate.lastMove &&
+      window.confirm("Are you sure you want to end the current game?")
+    ) {
+      props.newGame();
+    }
+  }, [props]);
+  return <Control title="new game" onclick={newGame} />;
 }
 
 export function Control(props: {

@@ -15,7 +15,6 @@ export interface BoardProps {
   shouldShowLastMove: boolean;
   shouldShowValidMoves: boolean;
   onMove: (r: number, c: number) => void;
-  state: ReversiState;
 }
 
 function matchLocation(locations: Location[], square: number[]) {
