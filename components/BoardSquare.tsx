@@ -16,7 +16,7 @@ export default function BoardSquare(props: BoardSquareProps) {
   const hasDecoration = isValidMove || isLastMove || isLastPlaced;
 
   return (
-    <div className="board-square" onClick={onclick}>
+    <div className="board-square" onClick={onclick} tabIndex={0}>
       {squarestate !== "empty" && <StonePiece stone={squarestate} />}
       {hasDecoration && (
         <div

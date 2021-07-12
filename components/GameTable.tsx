@@ -45,6 +45,7 @@ export default function GameTable(props: GameTableProps) {
 
   return (
     <div className="game-table" ref={ref}>
+      <div className="spacer"></div>
       <ControlPanel
         gamestate={gamestate}
         setShouldShowLastMove={toggleLastMove}
@@ -69,6 +70,7 @@ export default function GameTable(props: GameTableProps) {
           onMove={onMove}
         />
       </div>
+      <div className="spacer"></div>
     </div>
   );
 }

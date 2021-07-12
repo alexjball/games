@@ -41,7 +41,14 @@ export function ControlPanel(props: ControlPanelProps) {
           title={`${shouldShowLastMove ? "hide" : "show"} last move`}
           onclick={setShouldShowLastMove}
         />
-        <Control title="pass" onclick={pass} />
+        <Control
+          title="pass"
+          onclick={() => {
+            if (gamestate.state === "in-progress") {
+              pass();
+            }
+          }}
+        />
       </div>
       <div className="side-info">
         <Status gamestate={gamestate} />
@@ -86,8 +93,10 @@ function Status({ gamestate }: { gamestate: GameState }) {
 
 export function NewGame(props: { gamestate: GameState; newGame: () => void }) {
   const newGame = useCallback(() => {
+    const shouldPrompt =
+      props.gamestate.lastMove && props.gamestate.state === "in-progress";
     if (
-      props.gamestate.lastMove &&
+      !shouldPrompt ||
       window.confirm("Are you sure you want to end the current game?")
     ) {
       props.newGame();
@@ -121,9 +130,8 @@ export function ScoreDisplay(props: { gamestate: GameState }) {
   return (
     <>
       <div className="score-display-container" ref={ref}>
-        <div className="score-title">Scores:</div>
         <div
-          className={`score-item black ${
+          className={`score-item control-text black ${
             currentStone == "black" ? "turn" : ""
           }`}
         >
@@ -131,7 +139,7 @@ export function ScoreDisplay(props: { gamestate: GameState }) {
           <div>Black: {blackScore}</div>
         </div>
         <div
-          className={`score-item white ${
+          className={`score-item control-text white ${
             currentStone == "white" ? "turn" : ""
           }`}
         >
