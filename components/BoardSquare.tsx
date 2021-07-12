@@ -6,58 +6,30 @@ export interface BoardSquareProps {
   squarestate: SquareState;
   isLastMove?: boolean;
   isValidMove?: boolean;
+  isLastPlaced?: boolean;
   onclick: () => void;
 }
 
 export default function BoardSquare(props: BoardSquareProps) {
-  const { squarestate, isLastMove, isValidMove, onclick} = props;
+  const { squarestate, isLastMove, isValidMove, isLastPlaced, onclick } = props;
 
-  let b: Stone;
-
-  if (squarestate === "black") {
-    b = squarestate;
-  }
-
-  const style: React.CSSProperties = {
-    height: "12%",
-    width: "12%",
-    outline: "1px solid brown",
-    float: "left",
-    backgroundColor: "tan",
-    boxShadow: "3px 3px 20px 4px #08070833 inset ",
-  };
+  const hasDecoration = isValidMove || isLastMove || isLastPlaced;
 
   return (
-    <div style={style} onClick={onclick}>
-      {isValidMove && (
-        <div
-          style={{
-            height: "20%",
-            width: "20%",
-            borderRadius: "50%",
-            backgroundColor: "#f5f5ff",
-            margin: "50% 0 0 50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          {" "}
-        </div>
-      )}
-      {isLastMove && (
-        <div
-          style={{
-            height: "20%",
-            width: "20%",
-            borderRadius: "50%",
-            backgroundColor: "#45f",
-            margin: "50% 0 0 50%",
-            transform: "translate(-50%, -50%)",
-          }}
-        >
-          {" "}
-        </div>
-      )}
+    <div className="board-square" onClick={onclick}>
       {squarestate !== "empty" && <StonePiece stone={squarestate} />}
+      {hasDecoration && (
+        <div
+          className="square-decoration"
+          style={{
+            backgroundColor: isValidMove
+              ? "#c74d4d"
+              : isLastPlaced
+              ? "#2e8d59"
+              : "#3744d8",
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import StonePiece from "./StonePiece";
 import { Stone } from "../game/reversi";
 
 export default {
-  title: "Example/StonePiece",
+  title: "StonePiece",
   component: StonePiece,
 } as ComponentMeta<typeof StonePiece>;
 

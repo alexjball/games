@@ -11,7 +11,7 @@ import {
 import Board from "./Board";
 
 export default {
-  title: "Example/Board",
+  title: "Board",
   component: Board,
 } as ComponentMeta<typeof Board>;
 
@@ -25,8 +25,8 @@ const validMoveState = {
 };
 ValidMoves.args = {
   gamestate: validMoveState,
-  width: innerWidth / 1.5,
+  side: innerWidth / 1.5,
   shouldShowValidMoves: true,
 };
 export const EmptyBoard = Template.bind({});
-EmptyBoard.args = { gamestate: validMoveState, width: innerWidth / 1.5 };
+EmptyBoard.args = { gamestate: validMoveState, side: innerWidth / 1.5 };

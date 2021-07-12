@@ -8,10 +8,11 @@ import {
 } from "../game/reversi";
 
 import Board from "./Board";
-import GameTable, { ScoreDisplay, Control } from "./GameTable";
+import GameTable from "./GameTable";
+import { ScoreDisplay } from "./GameControls";
 
 export default {
-  title: "Example/GameTable",
+  title: "GameTable",
   component: Board,
 } as ComponentMeta<typeof Board>;
 

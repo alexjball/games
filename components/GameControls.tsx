@@ -1,14 +1,19 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { GameState } from "../game/reversi";
+import { GameState, otherStone } from "../game/reversi";
+import MuteButton from "./MuteButton";
 import StonePiece from "./StonePiece";
 
 export interface ControlPanelProps {
   gamestate: GameState;
   setShouldShowLastMove: any;
   setShouldShowValidMoves: any;
+  shouldShowLastMove: boolean;
+  shouldShowValidMoves: boolean;
   side?: number;
   newGame: () => void;
   pass: () => void;
+  muted: boolean;
+  toggleMute: () => void;
 }
 
 export function ControlPanel(props: ControlPanelProps) {
@@ -16,31 +21,70 @@ export function ControlPanel(props: ControlPanelProps) {
     gamestate,
     setShouldShowLastMove,
     setShouldShowValidMoves,
-    side,
+    shouldShowLastMove,
+    shouldShowValidMoves,
     newGame,
     pass,
+    muted,
+    toggleMute,
   } = props;
 
-  const style: React.CSSProperties = {
-    backgroundColor: "aliceblue",
-    height: "100vh",
-    padding: "1em",
-    margin: "auto",
-    float: "left",
-  };
-
   return (
-    <div style={style}>
-      <NewGame gamestate={gamestate} newGame={newGame} />
-      <Control title="show available moves" onclick={setShouldShowValidMoves} />
-      <Control title="show last move" onclick={setShouldShowLastMove} />
-      <Control title="pass" onclick={pass} />
-      <ScoreDisplay gamestate={gamestate} />
+    <div className="side-panel">
+      <div className="control-panel">
+        <NewGame gamestate={gamestate} newGame={newGame} />
+        <Control
+          title={`${shouldShowValidMoves ? "hide" : "show"} legal moves`}
+          onclick={setShouldShowValidMoves}
+        />
+        <Control
+          title={`${shouldShowLastMove ? "hide" : "show"} last move`}
+          onclick={setShouldShowLastMove}
+        />
+        <Control title="pass" onclick={pass} />
+      </div>
+      <div className="side-info">
+        <Status gamestate={gamestate} />
+        <ScoreDisplay gamestate={gamestate} />
+        <MuteButton muted={muted} onClick={toggleMute} />
+      </div>
     </div>
   );
 }
 
-function NewGame(props: { gamestate: GameState; newGame: () => void }) {
+function Status({ gamestate }: { gamestate: GameState }) {
+  return (
+    <div className="status">
+      {(() => {
+        switch (gamestate.state) {
+          case "tie":
+            return "TIE";
+          case "winner-black":
+            return "BLACK WINS!";
+          case "winner-white":
+            return "WHITE WINS!";
+          case "in-progress":
+            if (gamestate.lastMove) {
+              const lastStone = otherStone(
+                gamestate.currentStone
+              ).toUpperCase();
+              const [placed] = gamestate.lastMove;
+              if (placed) {
+                const col = ["A", "B", "C", "D", "E", "F", "G", "H"][placed.c];
+                const row = 8 - placed.r;
+                return `${lastStone} TO ${col}${row}`;
+              }
+              return `${lastStone} PASSED`;
+            }
+          default:
+            return `${gamestate.currentStone.toUpperCase()}'S TURN`;
+        }
+      })()}
+    </div>
+  );
+}
+
+export function NewGame(props: { gamestate: GameState; newGame: () => void }) {
   const newGame = useCallback(() => {
     if (
       props.gamestate.lastMove &&
@@ -52,23 +96,12 @@ function NewGame(props: { gamestate: GameState; newGame: () => void }) {
   return <Control title="new game" onclick={newGame} />;
 }
 
-export function Control(props: {
-  title: string;
-  onclick: () => void;
-  style?: object;
-}) {
-  const { title, onclick, style } = props;
+export function Control(props: { title: string; onclick: () => void }) {
+  const { title, onclick } = props;
 
-  const controlStyle: React.CSSProperties = {
-    ...style,
-    height: "4em",
-    margin: "5px auto",
-    width: "100%",
-    textAlign: "center",
-  };
   return (
-    <button type="button" onClick={onclick} style={controlStyle}>
-      {title}
+    <button className="control springy" type="button" onClick={onclick}>
+      <div className="control-text">{title}</div>
     </button>
   );
 }
@@ -78,40 +111,33 @@ export function ScoreDisplay(props: { gamestate: GameState }) {
   const ref = useRef<HTMLDivElement>(null);
   const [wrapperWidth, setWrapperWidth] = useState(0);
 
-  const style: React.CSSProperties = {
-    height: "5em",
-    fontFamily: "sans-serif",
-    textTransform: "uppercase",
-    margin: "1em",
-    lineHeight: "1.8em",
-    textAlign: "center",
-  };
-
   const { currentStone } = props.gamestate;
 
   useEffect(() => {
     if (!ref.current) return;
-
     setWrapperWidth(ref.current.getBoundingClientRect().width);
   });
 
   return (
     <>
-      <div style={style} ref={ref}>
+      <div className="score-display-container" ref={ref}>
+        <div className="score-title">Scores:</div>
         <div
-          style={{
-            width: wrapperWidth * 0.4,
-            height: wrapperWidth * 0.4,
-            margin: "3em auto",
-          }}
+          className={`score-item black ${
+            currentStone == "black" ? "turn" : ""
+          }`}
         >
-          <StonePiece stone={currentStone} />
+          <div className="score-item-icon"> </div>
+          <div>Black: {blackScore}</div>
         </div>
-        <div>
-          <strong>Scores:</strong>
+        <div
+          className={`score-item white ${
+            currentStone == "white" ? "turn" : ""
+          }`}
+        >
+          <div className="score-item-icon"> </div>
+          <div>White: {whiteScore}</div>
         </div>
-        <div>Black: {blackScore}</div>
-        <div>White: {whiteScore}</div>
       </div>
     </>
   );

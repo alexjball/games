@@ -5,7 +5,7 @@ export interface State {
   muted: boolean;
 }
 
-const initialState: State = { muted: false };
+const initialState: State = { muted: true };
 
 const slice = createSlice({
   name: "audio",

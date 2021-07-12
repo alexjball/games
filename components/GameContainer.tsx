@@ -30,8 +30,10 @@ export default function GameContainer() {
         onNewGame={onNewGame}
         onMove={onMove}
         onPass={onPass}
+        muted={muted}
+        toggleMute={muteCallback}
       />
-      <GameAudio gameState={game} muted={muted} toggleMute={muteCallback} />
+      <GameAudio gameState={game} muted={muted} />
     </div>
   );
 }

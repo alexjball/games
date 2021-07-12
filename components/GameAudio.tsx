@@ -17,7 +17,7 @@ const SOUNDS = {
 };
 type Sound = keyof typeof SOUNDS;
 
-type Props = { gameState: GameState; muted: boolean; toggleMute: () => void };
+type Props = { gameState: GameState; muted: boolean };
 
 export default class GameAudio extends Component<Props, {}> {
   sounds: RefObject<HTMLDivElement>;
@@ -69,13 +69,10 @@ export default class GameAudio extends Component<Props, {}> {
 
   render() {
     return (
-      <div>
-        <MuteButton muted={this.props.muted} onClick={this.props.toggleMute} />
-        <div ref={this.sounds} style={{ display: "none" }}>
-          {Object.entries(SOUNDS).map(([id, src], i) => (
-            <audio key={i} id={id} src={src} />
-          ))}
-        </div>
+      <div ref={this.sounds} style={{ display: "none" }}>
+        {Object.entries(SOUNDS).map(([id, src], i) => (
+          <audio key={i} id={id} src={src} />
+        ))}
       </div>
     );
   }

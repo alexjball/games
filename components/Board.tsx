@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  GameState,
-  SquareState,
-  Stone,
-  Location,
-  ReversiState,
-} from "../game/reversi";
-import StonePiece from "./StonePiece";
+import { GameState, Location } from "../game/reversi";
 import BoardSquare from "./BoardSquare";
 
 export interface BoardProps {
@@ -17,11 +10,9 @@ export interface BoardProps {
   onMove: (r: number, c: number) => void;
 }
 
-function matchLocation(locations: Location[], square: number[]) {
-  return (
-    locations.findIndex(
-      (location) => location[0] === square[0] && location[1] === square[1]
-    ) >= 0
+function findLocation(locations: Location[], square: number[]): number {
+  return locations.findIndex(
+    (location) => location[0] === square[0] && location[1] === square[1]
   );
 }
 
@@ -39,7 +30,6 @@ export default function Board(props: BoardProps) {
     lastMove?.map((move) => [move.r, move.c] as Location) ?? [];
 
   const squares = [];
-  console.log(side);
   for (let row = 0; row < board.length; row++) {
     for (let block = 0; block < board.length; block++) {
       squares.push({
@@ -47,9 +37,13 @@ export default function Board(props: BoardProps) {
         block,
         squarestate: board[row][block],
         isValidMove:
-          shouldShowValidMoves && matchLocation(validMoves, [row, block]),
+          shouldShowValidMoves && findLocation(validMoves, [row, block]) >= 0,
         isLastMove:
-          shouldShowLastMove && matchLocation(lastMoveLocations, [row, block]),
+          shouldShowLastMove &&
+          findLocation(lastMoveLocations, [row, block]) >= 0,
+        isLastPlaced:
+          shouldShowLastMove &&
+          findLocation(lastMoveLocations, [row, block]) == 0,
         onclick: () => {
           onMove(row, block);
         },
@@ -57,16 +51,8 @@ export default function Board(props: BoardProps) {
     }
   }
 
-  const style: React.CSSProperties = {
-    height: side,
-    width: side,
-    padding: "5%",
-    float: "left",
-  };
-
   return (
-    <div style={style}>
-      {state === "winner-white" || ("winner-black" && <div>{state}</div>)}
+    <div className="board" style={{ height: side, width: side }}>
       {squares.map((square) => {
         const {
           row,
@@ -74,6 +60,7 @@ export default function Board(props: BoardProps) {
           squarestate,
           isValidMove,
           isLastMove,
+          isLastPlaced,
           onclick,
         } = square;
 
@@ -83,6 +70,7 @@ export default function Board(props: BoardProps) {
             squarestate={squarestate}
             isValidMove={isValidMove}
             isLastMove={isLastMove}
+            isLastPlaced={isLastPlaced}
             onclick={onclick}
           />
         );
