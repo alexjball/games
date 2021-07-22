@@ -1,0 +1,7 @@
+.piece-wrapper{
+	outline: 1px solid lightpink;
+	height: 4em; 
+	width: 4em; 
+	background: lightpink;
+	cursor: pointer;
+}
