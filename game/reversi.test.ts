@@ -1,4 +1,22 @@
 import { Board, Reversi, Stone, Location } from "./reversi";
+import { enablePatches, immerable, produce, produceWithPatches } from "immer";
+
+beforeAll(() => enablePatches());
+
+describe("immer", () => {
+  it("can draft a game", () => {
+    const g = new Reversi();
+    g.newGame("black");
+
+    const [g2, patches, inversePatches] = produceWithPatches(g, (draft) => {
+      draft.move(3, 5);
+    });
+
+    // console.log(patches, inversePatches);
+    expect(g2.board.lookup(3, 5)).toEqual("black");
+    expect(g.board.lookup(3, 5)).toEqual("empty");
+  });
+});
 
 describe("Board", () => {
   it("visits each square", () => {

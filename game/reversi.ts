@@ -1,3 +1,5 @@
+import { immerable } from "immer";
+
 export type Stone = "black" | "white";
 export type SquareState = "empty" | Stone;
 export type Row = SquareState[];
@@ -24,6 +26,8 @@ export const otherStone = (a: Stone): Stone =>
   a === "black" ? "white" : "black";
 
 export class Board {
+  [immerable] = true;
+  
   readonly size = 8;
   squares: Row[];
 
@@ -171,6 +175,8 @@ export type ReversiState =
   | "tie";
 
 export class Reversi {
+  [immerable] = true;
+
   board: Board = new Board();
   currentStone: Stone = "black";
   validMoves: Location[] = [];
