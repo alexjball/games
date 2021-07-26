@@ -61,12 +61,13 @@ export class TicTacToe {
     }
 
     this.board[r][c] = this.currentMarker
-    this.currentMarker = this.currentMarker === "X" ? "O" : "X"
+    this.currentMarker = otherMarker(this.currentMarker)
     this.updateStatus()
     this.updateValidMoves()
   }
 }
 
+export const otherMarker = (m: Marker) => (m === "X" ? "O" : "X")
 export type Status = "empty" | "in-progress" | "win-X" | "win-O" | "tie"
 export type Marker = "X" | "O"
 export type Square = Marker | null

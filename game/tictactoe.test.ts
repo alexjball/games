@@ -1,3 +1,4 @@
+import produce from "immer"
 import { TicTacToe } from "./tictactoe"
 
 describe("TicTacToe", () => {
@@ -94,5 +95,18 @@ describe("TicTacToe", () => {
     t.move(2, 2)
 
     expect(t.status).toEqual("tie")
+  })
+
+  test("can draft", () => {
+    const t = new TicTacToe()
+    t.newGame("X")
+    const r = produce(t, d => {
+      d.newGame("O")
+      d.move(1, 1)
+    })
+    expect(t.board[1][1]).toBeNull()
+    expect(t.currentMarker).toBe("X")
+    expect(r.board[1][1]).toBe("O")
+    expect(r.currentMarker).toBe("X")
   })
 })
