@@ -14,11 +14,7 @@ export interface GameState {
 }
 
 export type Direction = -1 | 0 | 1;
-export type NeighborVisitor = (
-  dR: Direction,
-  dC: Direction,
-  s: SquareState
-) => void;
+export type NeighborVisitor = (dR: Direction, dC: Direction, s: SquareState) => void;
 export type BoardVisitor = (r: number, c: number, s: SquareState) => void;
 export type Move = { r: number; c: number; p: Piece }[];
 
@@ -33,6 +29,7 @@ export class Board {
   reset() {
     this.squares = this.empty();
   }
+
   move(): Move {
     let move: Move = [];
     return move;
@@ -45,9 +42,7 @@ export class Board {
   }
 
   forEachSquare(f: BoardVisitor) {
-    this.squares.forEach((row, iRow) =>
-      row.forEach((s, iCol) => f(iRow, iCol, s))
-    );
+    this.squares.forEach((row, iRow) => row.forEach((s, iCol) => f(iRow, iCol, s)));
   }
 
   printBoard() {
@@ -64,7 +59,8 @@ export class Board {
 export type ChessState =
   | "empty"
   | "in-progress"
-  | "mate"
+  | "check-black"
+  | "check-white"
   | "winner-black"
   | "winner-white"
   | "tie";
@@ -100,6 +96,10 @@ export class Chess {
       return "winner-white";
     } else if (this.blackScore > this.whiteScore) {
       return "winner-black";
+    } else if (this.blackScore > 100) {
+      return "check-black";
+    } else if (this.whiteScore > 100) {
+      return "check-white";
     } else {
       return "tie";
     }
@@ -127,14 +127,14 @@ export class Chess {
     s[6][1] = new Piece("teamBlack", "Pawn", [6, 1]);
     s[7][1] = new Piece("teamBlack", "Pawn", [7, 1]);
 
-    s[0][8] = new Piece("teamBlack", "Rook", [0, 8]);
-    s[1][8] = new Piece("teamBlack", "Knight", [1, 8]);
-    s[2][8] = new Piece("teamBlack", "Bishop", [2, 8]);
-    s[3][8] = new Piece("teamBlack", "Queen", [3, 8]);
-    s[4][8] = new Piece("teamBlack", "King", [4, 8]);
-    s[5][8] = new Piece("teamBlack", "Bishop", [5, 8]);
-    s[6][8] = new Piece("teamBlack", "Knight", [6, 8]);
-    s[7][8] = new Piece("teamBlack", "Rook", [7, 8]);
+    s[0][8] = new Piece("teamWhite", "Rook", [0, 8]);
+    s[1][8] = new Piece("teamWhite", "Knight", [1, 8]);
+    s[2][8] = new Piece("teamWhite", "Bishop", [2, 8]);
+    s[3][8] = new Piece("teamWhite", "Queen", [3, 8]);
+    s[4][8] = new Piece("teamWhite", "King", [4, 8]);
+    s[5][8] = new Piece("teamWhite", "Bishop", [5, 8]);
+    s[6][8] = new Piece("teamWhite", "Knight", [6, 8]);
+    s[7][8] = new Piece("teamWhite", "Rook", [7, 8]);
 
     s[0][7] = new Piece("teamWhite", "Pawn", [0, 7]);
     s[1][7] = new Piece("teamWhite", "Pawn", [1, 7]);
@@ -152,22 +152,28 @@ export class Chess {
   move(p: Piece, r: number, c: number) {
     // this.lastMove = this.board.move(p, r, c);
     this.updateScore();
-    p.updatePossibleMoves();
+    p.updateReachableSquares();
   }
+
+  capture(p: Piece, cap: Piece, r: number, c: number) {}
+
+  updateRemainingPieces() {}
 
   updateScore() {
     this.blackScore = 0;
     this.whiteScore = 0;
-    this.board.forEachSquare((r, c, s) => {
-      switch (s) {
-        case "black":
-          this.blackScore++;
-          break;
-        case "white":
-          this.whiteScore++;
-          break;
-      }
-    });
+    // if a piece was captured or exchanged, update the point sum of captured pieces
+
+    // this.board.forEachSquare((r, c, s) => {
+    //   switch (s) {
+    //     case "black":
+    //       this.blackScore++;
+    //       break;
+    //     case "white":
+    //       this.whiteScore++;
+    //       break;
+    //   }
+    // });
   }
 }
 
