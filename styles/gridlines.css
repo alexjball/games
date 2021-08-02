@@ -1,13 +1,14 @@
 .square {
-    height: 3em; 
-    width: 3em;
+    grid-column: 0; 
+    grid-row: 0;
     color: var(--primary-text-color);
     background-color: var(--background-color);
     outline: 1px dotted  var(--primary-text-color); 
     text-align: center;
     font-size: 1em;
-    line-height: 3em;
-    cursor: pointer; 
+    cursor: pointer;
+    transition: transform 250ms linear;
+    border: 6px solid var(--background-color);
 }
 
 .square:hover{
@@ -22,9 +23,25 @@
     outline: 12px solid var(--foreground-color) ;
     outline-offset: -6px;
 }
+.edge {
+background-color: cadetblue;
+}
+
+.edge:hover{
+
+    background-color: pink;
+}
+.edge.captured{
+
+}
 
 .board-grid{
+    display: block; 
+    height: 80vh; 
+    width: 80vh;    
+    margin: auto;
     display: grid; 
-    grid-template-columns: 4rem repeat(15, 1fr) 4rem;
-    grid-template-rows: 4rem repeat(15, 1fr) 4rem;
+    grid-template-columns: 1em repeat(16, 0.5vw 6vw) 1em ;
+    grid-template-rows: 1em repeat(16, 0.5vh 6vh) 1em ;
+    outline: 1px solid yellow;
 }

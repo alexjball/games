@@ -1,6 +1,6 @@
 import React, { MutableRefObject, useEffect, useRef, useState } from "react";
 import { Coord } from "../game/chess2";
-import { GameState, Gridlines, Board, SquareState, SquareType, Player } from "../game/gridlines";
+import { GameState, Gridlines, Board, SquareState, SquareType, Player, Edge, Square } from "../game/gridlines";
 import game from "../redux/game";
 import "../styles/globals.css";
 import "../styles/gridlines.css";
@@ -9,13 +9,31 @@ export default function GridlinesView(props: { size: number }) {
   const { size } = props;
   const game = new Gridlines(size);
 
+  type  blockType = Edge | Square
+
+
+  
   return (
     <div id='gridlines' className='board-grid'>
       {game.board.grid.map((row, i) =>
-        row.map((sq, k) => <Square key={k + "" + i} index={i} {...sq} />)
+        row.map((sq, k) => {
+          if (sq instanceof Square){
+             return <SquareView key={k + "" + i} index={i} {...sq} />
+          } else if (sq instanceof Edge) {
+            return <EdgeView isSelected={false} />
+        }})
       )}
     </div>
   );
+}
+
+export type EdgePropsType = {
+  isSelected: false;
+};
+
+export function EdgeView(props: EdgePropsType) {
+  const classList = `edge ${props.isSelected && "selected"}`;
+  return <div className={classList}></div>;
 }
 
 export type SquarePropsType = {
@@ -28,7 +46,7 @@ export type SquarePropsType = {
   index: number;
 };
 
-export function Square(props: SquarePropsType) {
+export function SquareView(props: SquarePropsType) {
   const { index, coord, clickedSides, isCaptured, capturedBy, clicks, clicked } = props;
   const squareRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -57,20 +75,19 @@ export function Square(props: SquarePropsType) {
   };
 
   const borders = ["borderTop", "borderRight", "borderBottom", "borderLeft"];
-  const capturedBorders = borders.filter((name, i) => clickedSides[i] === 1)
+  const capturedBorders = borders.filter((name, i) => clickedSides[i] === 1);
   const closestBorder = getClosestBorder(mousePosition);
-  const borderStyle: {[name:string]: string} = {}
-  capturedBorders.forEach(side => {
-    borderStyle[side] = border
-  })
-  
+  const borderStyle: { [name: string]: string } = {};
+  capturedBorders.forEach((side) => {
+    borderStyle[side] = border;
+  });
 
   const style = {
     gridColumnStart: coord[0] + 2,
     gridRowStart: coord[1] + 2,
     zIndex: 10,
     [closestBorder as string]: border,
-    ...borderStyle
+    ...borderStyle,
   };
 
   const getMousePositionOverSquare = (event: React.MouseEvent) => {
@@ -95,7 +112,7 @@ export function Square(props: SquarePropsType) {
       onMouseMove={(event: React.MouseEvent) => getMousePositionOverSquare(event)}
       onMouseLeave={(event: React.MouseEvent) => updateHovered(event, false)}
     >
-      {isCaptured ? "yes" : "no"}
+      {isCaptured ? "yes" : ""}
     </div>
   );
 }

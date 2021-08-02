@@ -19,7 +19,6 @@ export type GameState = {
   player1Score: number;
   player2Score: number;
 };
-
 export class Gridlines {
   board: Board;
   turn: Player = 1;
@@ -33,7 +32,7 @@ export class Gridlines {
 
 export class Board {
   size: number;
-  grid: Square[][];
+  grid: (Square|Edge)[][];
 
   constructor(size: number) {
     this.size = size;
@@ -41,17 +40,40 @@ export class Board {
   }
 
   initGrid(size: number) {
-    const gridSquares: Square[][] = [];
+    const gridSquares: (Square|Edge)[][] = [];
     for (let i = 0; i < size; i++) {
       const row = [];
       for (let k = 0; k < size; k++) {
-        const square = new Square(i, k);
-        row.push(square);
+        if (i % 2 === 0 || k % 2 === 0) {
+          const edge = new Edge(i, k);
+          row.push(edge);
+        } else {
+          const square = new Square(i, k);
+          row.push(square);
+        }
       }
       gridSquares.push(row);
     }
     return gridSquares;
   }
+
+  clicked(event: MouseEvent){
+    const target = event.target as HTMLDivElement;
+    if (target.classList.contains("edge")){
+      
+    }
+  }
+}
+
+
+export class Edge {
+  isSelected: boolean = false;
+  coord: Coord;
+
+  constructor(i: number, k: number) {
+    this.coord = [i, k];
+  }
+
 }
 
 export class Square implements SquareType {
@@ -73,21 +95,21 @@ export class Square implements SquareType {
   }
 
   clicked = (side: string) => {
-    switch(side){
+    switch (side) {
       case "borderTop":
-        this.clickedSides[0] = 1
-        break
+        this.clickedSides[0] = 1;
+        break;
       case "borderRight":
-        this.clickedSides[1] = 1
-        break
+        this.clickedSides[1] = 1;
+        break;
       case "borderBottom":
-        this.clickedSides[2] = 1
-        break
+        this.clickedSides[2] = 1;
+        break;
       case "borderLeft":
-        this.clickedSides[3] = 1
-        break
+        this.clickedSides[3] = 1;
+        break;
     }
-    if (this.clickedSides.every(side => side === 1)) {
+    if (this.clickedSides.every((side) => side === 1)) {
       this.isCaptured = true;
     }
     console.log("clicked", this.clickedSides, this.isCaptured);
