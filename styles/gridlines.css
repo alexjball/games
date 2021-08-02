@@ -1,0 +1,30 @@
+.square {
+    height: 3em; 
+    width: 3em;
+    color: var(--primary-text-color);
+    background-color: var(--background-color);
+    outline: 1px dotted  var(--primary-text-color); 
+    text-align: center;
+    font-size: 1em;
+    line-height: 3em;
+    cursor: pointer; 
+}
+
+.square:hover{
+    background-color:var(--foreground-color);
+}
+
+.square.captured {
+    background-color:var(--foreground-color);
+}
+
+.captured {
+    outline: 12px solid var(--foreground-color) ;
+    outline-offset: -6px;
+}
+
+.board-grid{
+    display: grid; 
+    grid-template-columns: 4rem repeat(15, 1fr) 4rem;
+    grid-template-rows: 4rem repeat(15, 1fr) 4rem;
+}
