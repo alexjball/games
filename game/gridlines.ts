@@ -1,29 +1,41 @@
 export type Coord = [number, number];
 export type Player = 1 | 2;
-export type SquareState = {
-  coord: Coord;
-  clickedSides: number[];
-  isCaptured: boolean;
-  capturedBy: Player | null;
-};
-export type SquareType = {
-  coord: Coord;
-  clickedSides: number[];
-  isCaptured: boolean;
-  capturedBy: Player | null;
-  clicks: number;
-  clicked: (side: string) => void;
-};
+
 export type GameState = {
   turn: Player;
   player1Score: number;
   player2Score: number;
 };
+
+export type Corner = {
+  blockType: "corner";
+  coord: Coord;
+};
+export type Edge = {
+  blockType: "edge";
+  isSelected: boolean;
+  coord: Coord;
+  neighbors: Coord[];
+};
+
+export type Square = {
+  blockType: "square";
+  coord: Coord;
+  isCaptured: boolean;
+  capturedBy: Player | null;
+  sidesSelected: number;
+  sideClick(): void;
+};
+
+export type Block = Square | Edge | Corner;
+
 export class Gridlines {
   board: Board;
-  turn: Player = 1;
-  player1Score: number = 0;
-  player2Score: number = 0;
+  gameState: GameState = {
+    turn: 1,
+    player1Score: 0,
+    player2Score: 0,
+  };
 
   constructor(size: number) {
     this.board = new Board(size);
@@ -32,7 +44,7 @@ export class Gridlines {
 
 export class Board {
   size: number;
-  grid: (Square|Edge)[][];
+  grid: (Square | Edge | Corner)[][];
 
   constructor(size: number) {
     this.size = size;
@@ -40,15 +52,42 @@ export class Board {
   }
 
   initGrid(size: number) {
-    const gridSquares: (Square|Edge)[][] = [];
+    const gridSquares: (Square | Edge | Corner)[][] = [];
     for (let i = 0; i < size; i++) {
       const row = [];
       for (let k = 0; k < size; k++) {
         if (i % 2 === 0 || k % 2 === 0) {
-          const edge = new Edge(i, k);
-          row.push(edge);
+          if (i % 2 === 0 && k % 2 === 0) {
+            const corner: Corner = {
+              blockType: "corner",
+              coord: [k, i],
+            };
+            row.push(corner);
+          } else {
+            const edge: Edge = {
+              blockType: "edge",
+              coord: [k, i],
+              isSelected: false,
+              neighbors: setNeighbors([k, i]),
+            };
+            row.push(edge);
+          }
         } else {
-          const square = new Square(i, k);
+          const square: Square = {
+            blockType: "square",
+            coord: [k, i],
+            isCaptured: false,
+            capturedBy: null,
+            sidesSelected: 0,
+            sideClick: () => {
+              square.sidesSelected += 1;
+              if (square.sidesSelected >= 4) {
+                square.isCaptured = true;
+              }
+              console.log("sidesSelected", square.sidesSelected);
+            },
+          };
+
           row.push(square);
         }
       }
@@ -56,62 +95,15 @@ export class Board {
     }
     return gridSquares;
   }
-
-  clicked(event: MouseEvent){
-    const target = event.target as HTMLDivElement;
-    if (target.classList.contains("edge")){
-      
-    }
-  }
 }
 
-
-export class Edge {
-  isSelected: boolean = false;
-  coord: Coord;
-
-  constructor(i: number, k: number) {
-    this.coord = [i, k];
-  }
-
-}
-
-export class Square implements SquareType {
-  coord: Coord;
-  clickedSides: number[];
-  isCaptured: boolean;
-  capturedBy: Player | null;
-  clicks: number = 0;
-
-  constructor(i: number, k: number) {
-    this.coord = [i, k];
-    this.clickedSides = [0, 0, 0, 0];
-    this.isCaptured = false;
-    this.capturedBy = null;
-  }
-
-  countClicks() {
-    return this.clickedSides.reduce((a, b) => a + Number(b), 0);
-  }
-
-  clicked = (side: string) => {
-    switch (side) {
-      case "borderTop":
-        this.clickedSides[0] = 1;
-        break;
-      case "borderRight":
-        this.clickedSides[1] = 1;
-        break;
-      case "borderBottom":
-        this.clickedSides[2] = 1;
-        break;
-      case "borderLeft":
-        this.clickedSides[3] = 1;
-        break;
-    }
-    if (this.clickedSides.every((side) => side === 1)) {
-      this.isCaptured = true;
-    }
-    console.log("clicked", this.clickedSides, this.isCaptured);
-  };
-}
+const setNeighbors = (coord: Coord) => {
+  const [k, i]: Coord = coord;
+  const neighbors: Coord[] = [
+    [k + 1, i],
+    [k, i + 1],
+  ];
+  i > 0 && neighbors.push([k, i - 1]);
+  k > 0 && neighbors.push([k - 1, i]);
+  return neighbors;
+};

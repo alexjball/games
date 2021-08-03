@@ -11,4 +11,4 @@ export default {
 const Template: ComponentStory<typeof GridlinesView> = (args) => <GridlinesView {...args} />;
 
 export const GridlinesStory = Template.bind({});
-GridlinesStory.args = {size: 15}
+GridlinesStory.args = {size: 21}
