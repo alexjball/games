@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Coord } from "../game/chess2";
-import { Block, Corner, Edge, GameState, Gridlines, Player, Square } from "../game/gridlines";
+import { Block, Corner, Edge, GameState, Gridlines, Square } from "../game/gridlines";
 import "../styles/globals.css";
 import "../styles/gridlines.css";
+import { BoardView } from "./BoardView";
 
 export default function GridlinesView(props: { size: number }) {
   const { size } = props;
@@ -63,136 +64,5 @@ export default function GridlinesView(props: { size: number }) {
       reportPosition={reportPosition}
       hoveredEdge={hoveredEdge}
     />
-  );
-}
-
-export type BoardPropsType = {
-  grid: (Square | Edge | Corner)[][];
-  gameState: GameState;
-  clicked: () => void;
-  reportPosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
-  hoveredEdge: Coord;
-};
-
-export function BoardView(props: BoardPropsType) {
-  const { grid, gameState, clicked, reportPosition, hoveredEdge } = props;
-
-  return (
-    <div id='gridlines' className='board-grid'>
-      {grid.map((row, k) =>
-        row.map((blk, i) => {
-          if (blk.blockType === "square") {
-            const {sidesSelected, isCaptured, capturedBy } = blk;
-            return (
-              <SquareView
-                key={k + "" + i}
-                coord={[k, i]}
-                onclick={clicked}
-                index={i}
-                sidesSelected={sidesSelected}
-                isCaptured={isCaptured}
-                capturedBy={capturedBy}
-                reportPosition={reportPosition}
-              />
-            );
-          } else if (blk.blockType === "edge") {
-            const { isSelected } = blk;
-            const [x, y] = hoveredEdge;
-            return (
-              <EdgeView
-                key={k + "" + i}
-                isSelected={isSelected}
-                hovered={x === k && y === i}
-                onclick={clicked}
-                coord={[k, i]}
-              />
-            );
-          } else if (blk.blockType === "corner") {
-            return <CornerView key={k + "" + i} coord={[k, i]} />;
-          }
-        })
-      )}
-    </div>
-  );
-}
-
-export type EdgePropsType = {
-  isSelected: boolean;
-  coord: Coord;
-  hovered: boolean;
-  onclick: (coord: Coord) => void;
-};
-
-export function EdgeView(props: EdgePropsType) {
-  const { coord, onclick, isSelected, hovered } = props;
-
-  const style = {
-    gridColumnStart: coord[0] + 2,
-    gridRowStart: coord[1] + 2,
-    zIndex: 10,
-  };
-
-  return (
-    <div
-      className={`edge ${isSelected? "selected" : ""} ${hovered ? "incoming" : ""}`}
-      style={style}
-      onClick={() => {
-        onclick(coord);
-      }}
-    ></div>
-  );
-}
-
-export type SquarePropsType = {
-  coord: Coord;
-  isCaptured: boolean;
-  capturedBy: Player | null;
-  sidesSelected: number;
-  index: number;
-  onclick: () => void;
-  reportPosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
-};
-
-export function SquareView(props: SquarePropsType) {
-  const { index, coord, isCaptured, capturedBy, sidesSelected, onclick, reportPosition } = props;
-  const squareRef = useRef<HTMLDivElement>(null);
-
-  const [displayText, setDisplayText] = useState<number | string>("");
-
-  const style = {
-    gridColumnStart: coord[0] + 2,
-    gridRowStart: coord[1] + 2,
-    zIndex: 10,
-    backgroundColor: isCaptured ? "var(--board-color)" : "",
-    opacity: "0.2",
-  };
-
-  useEffect(() => {
-    capturedBy && setDisplayText(capturedBy);
-  }, [capturedBy]);
-
-  return (
-    <div
-      className={`square`}
-      ref={squareRef}
-      style={style}
-      onClick={() => onclick()}
-      onMouseMove={(event) => reportPosition(event, coord)}
-    >
-      <div>{displayText}</div>
-    </div>
-  );
-}
-
-export function CornerView(props: { coord: Coord }) {
-  const { coord } = props;
-  const style = {
-    gridColumnStart: coord[0] + 2,
-    gridRowStart: coord[1] + 2,
-  };
-  return (
-    <div className={"corner"} style={style}>
-      {" "}
-    </div>
   );
 }
