@@ -1,26 +1,26 @@
-import React, { useEffect, useReducer, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Coord } from "../game/chess2";
-import { Block, Edge, Gridlines, Player, Square, Corner } from "../game/gridlines";
+import { Block, Corner, Edge, GameState, Gridlines, Player, Square } from "../game/gridlines";
 import "../styles/globals.css";
 import "../styles/gridlines.css";
 
 export default function GridlinesView(props: { size: number }) {
   const { size } = props;
-  const [game, setGame] = useState(new Gridlines(size));
+  const gridlines: Gridlines = new Gridlines(size);
+  const [game, setGame] = useState<GameState>(gridlines.gameState);
   const rerender = () => setGame({ ...game });
-
-  console.log("rerendering GridlinesView");
+  const [hoveredEdge, setHoveredEdge] = useState<[number, number]>([0, 0]);
 
   const getBlock = (coord: Coord): Square | Edge | Corner => {
     const [x, y] = coord;
-    return game.board.grid[x][y];
+    return game.board[x][y];
   };
 
-  const clicked = (coord: Coord) => {
-    const [x, y] = coord;
-    const block: Block = getBlock(coord);
+  const clicked = () => {
+    const block: Block = getBlock(hoveredEdge);
     if (block.blockType === "edge") {
       if (block.isSelected) return;
+      console.log("edge", hoveredEdge);
       block.isSelected = true;
       for (let c of block.neighbors) {
         const nBlk = getBlock(c);
@@ -33,39 +33,85 @@ export default function GridlinesView(props: { size: number }) {
     console.log("rerender");
   };
 
+  const reportPosition = (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => {
+    const target = event.target as HTMLElement;
+    const horiz = event.clientX - target.offsetLeft;
+    const vert = event.clientY - target.offsetTop;
+    const width = target.offsetWidth;
+    const height = target.offsetHeight;
+
+    const x = horiz > (3 * width) / 4 ? 1 : horiz < width / 4 ? -1 : 0;
+    const y = vert > (3 * height) / 4 ? 1 : vert < height / 4 ? -1 : 0;
+
+    const [k, i] = coord;
+    const [hx, hy] = hoveredEdge;
+
+    if (k + x !== hx) {
+      setHoveredEdge([k + x, i]);
+      rerender();
+    } else if (i + y !== hy) {
+      setHoveredEdge([k, i + y]);
+      rerender();
+    }
+  };
+
   return (
-    <div>
-      <div id='gridlines' className='board-grid'>
-        {game.board.grid.map((row, i) =>
-          row.map((blk, k) => {
-            if (blk.blockType === "square") {
-              const { sideClick, sidesSelected, isCaptured, capturedBy } = blk;
-              return (
-                <SquareView
-                  key={k + "" + i}
-                  coord={[k, i]}
-                  onclick={clicked}
-                  index={i}
-                  sideClick={sideClick}
-                  sidesSelected={sidesSelected}
-                  isCaptured={isCaptured}
-                  capturedBy={capturedBy}
-                />
-              );
-            } else if (blk.blockType === "edge") {
-              const { isSelected } = blk;
-              return (
-                <EdgeView
-                  key={k + "" + i}
-                  isSelected={isSelected}
-                  onclick={clicked}
-                  coord={[k, i]}
-                />
-              );
-            }
-          })
-        )}
-      </div>
+    <BoardView
+      grid={game.board}
+      gameState={game}
+      clicked={clicked}
+      reportPosition={reportPosition}
+      hoveredEdge={hoveredEdge}
+    />
+  );
+}
+
+export type BoardPropsType = {
+  grid: (Square | Edge | Corner)[][];
+  gameState: GameState;
+  clicked: () => void;
+  reportPosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
+  hoveredEdge: Coord;
+};
+
+export function BoardView(props: BoardPropsType) {
+  const { grid, gameState, clicked, reportPosition, hoveredEdge } = props;
+
+  return (
+    <div id='gridlines' className='board-grid'>
+      {grid.map((row, k) =>
+        row.map((blk, i) => {
+          if (blk.blockType === "square") {
+            const {sidesSelected, isCaptured, capturedBy } = blk;
+            return (
+              <SquareView
+                key={k + "" + i}
+                coord={[k, i]}
+                onclick={clicked}
+                index={i}
+                sidesSelected={sidesSelected}
+                isCaptured={isCaptured}
+                capturedBy={capturedBy}
+                reportPosition={reportPosition}
+              />
+            );
+          } else if (blk.blockType === "edge") {
+            const { isSelected } = blk;
+            const [x, y] = hoveredEdge;
+            return (
+              <EdgeView
+                key={k + "" + i}
+                isSelected={isSelected}
+                hovered={x === k && y === i}
+                onclick={clicked}
+                coord={[k, i]}
+              />
+            );
+          } else if (blk.blockType === "corner") {
+            return <CornerView key={k + "" + i} coord={[k, i]} />;
+          }
+        })
+      )}
     </div>
   );
 }
@@ -73,13 +119,12 @@ export default function GridlinesView(props: { size: number }) {
 export type EdgePropsType = {
   isSelected: boolean;
   coord: Coord;
+  hovered: boolean;
   onclick: (coord: Coord) => void;
 };
 
 export function EdgeView(props: EdgePropsType) {
-  const { coord, onclick, isSelected } = props;
-
-  const [selectedState, setSelectedState] = useState<boolean>(isSelected);
+  const { coord, onclick, isSelected, hovered } = props;
 
   const style = {
     gridColumnStart: coord[0] + 2,
@@ -89,11 +134,10 @@ export function EdgeView(props: EdgePropsType) {
 
   return (
     <div
-      className={`edge ${selectedState ? "selected" : ""}`}
+      className={`edge ${isSelected? "selected" : ""} ${hovered ? "incoming" : ""}`}
       style={style}
       onClick={() => {
         onclick(coord);
-        setSelectedState(true);
       }}
     ></div>
   );
@@ -105,37 +149,50 @@ export type SquarePropsType = {
   capturedBy: Player | null;
   sidesSelected: number;
   index: number;
-  onclick: (coord: Coord) => void;
-  sideClick: () => void;
+  onclick: () => void;
+  reportPosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
 };
 
 export function SquareView(props: SquarePropsType) {
-  const { index, coord, isCaptured, capturedBy, sidesSelected, onclick, sideClick } = props;
+  const { index, coord, isCaptured, capturedBy, sidesSelected, onclick, reportPosition } = props;
   const squareRef = useRef<HTMLDivElement>(null);
 
-  const [displayText, setDisplayText] = useState<number | string>(0);
+  const [displayText, setDisplayText] = useState<number | string>("");
 
   const style = {
     gridColumnStart: coord[0] + 2,
     gridRowStart: coord[1] + 2,
     zIndex: 10,
-    backgroundColor: isCaptured ? "cadetblue" : "",
+    backgroundColor: isCaptured ? "var(--board-color)" : "",
+    opacity: "0.2",
   };
 
   useEffect(() => {
-    setDisplayText(sidesSelected);
-  }, [sidesSelected]);
-
-  console.log(sidesSelected);
+    capturedBy && setDisplayText(capturedBy);
+  }, [capturedBy]);
 
   return (
     <div
-      className={`square ${isCaptured && "captured"}`}
+      className={`square`}
       ref={squareRef}
       style={style}
-      onClick={() => onclick(coord)}
+      onClick={() => onclick()}
+      onMouseMove={(event) => reportPosition(event, coord)}
     >
-      {displayText}
+      <div>{displayText}</div>
+    </div>
+  );
+}
+
+export function CornerView(props: { coord: Coord }) {
+  const { coord } = props;
+  const style = {
+    gridColumnStart: coord[0] + 2,
+    gridRowStart: coord[1] + 2,
+  };
+  return (
+    <div className={"corner"} style={style}>
+      {" "}
     </div>
   );
 }

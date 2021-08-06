@@ -2,15 +2,17 @@ export type Coord = [number, number];
 export type Player = 1 | 2;
 
 export type GameState = {
-  turn: Player;
+  turn: Player | null;
   player1Score: number;
   player2Score: number;
+  board: (Square | Edge | Corner)[][];
 };
 
 export type Corner = {
   blockType: "corner";
   coord: Coord;
 };
+
 export type Edge = {
   blockType: "edge";
   isSelected: boolean;
@@ -29,26 +31,23 @@ export type Square = {
 
 export type Block = Square | Edge | Corner;
 
+export type GridLineState = "empty" | "in-progress" | "winner-player1" | "winner-player2" | "tie";
+
 export class Gridlines {
-  board: Board;
-  gameState: GameState = {
-    turn: 1,
-    player1Score: 0,
-    player2Score: 0,
-  };
-
-  constructor(size: number) {
-    this.board = new Board(size);
-  }
-}
-
-export class Board {
   size: number;
+  gameState: GameState;
   grid: (Square | Edge | Corner)[][];
 
   constructor(size: number) {
     this.size = size;
     this.grid = this.initGrid(this.size);
+
+    this.gameState = {
+      turn: 1,
+      player1Score: 0,
+      player2Score: 0,
+      board: this.grid.map((r) => [...r]),
+    };
   }
 
   initGrid(size: number) {
@@ -83,8 +82,8 @@ export class Board {
               square.sidesSelected += 1;
               if (square.sidesSelected >= 4) {
                 square.isCaptured = true;
+                square.capturedBy = this.gameState.turn;
               }
-              console.log("sidesSelected", square.sidesSelected);
             },
           };
 
@@ -95,6 +94,23 @@ export class Board {
     }
     return gridSquares;
   }
+
+  get state(): GridLineState {
+    const totalScore = this.gameState.player1Score + this.gameState.player2Score,
+      totalSquares = this.size * this.size;
+    if (totalScore === 0) {
+      return "empty";
+    } else if (totalScore < totalSquares) {
+      return "in-progress";
+    } else if (this.gameState.player1Score > this.gameState.player2Score) {
+      return "winner-player1";
+    } else if (this.gameState.player2Score > this.gameState.player1Score) {
+      return "winner-player2";
+    } else {
+      return "tie";
+    }
+  }
+
 }
 
 const setNeighbors = (coord: Coord) => {
