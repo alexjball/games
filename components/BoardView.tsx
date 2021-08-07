@@ -22,6 +22,7 @@ export function BoardView(props: BoardPropsType) {
       {grid.map((row, k) => row.map((blk, i) => {
         if (blk.blockType === "square") {
           const { sidesSelected, isCaptured, capturedBy } = blk;
+
           return (
             <SquareView
               key={k + "" + i}

@@ -16,13 +16,25 @@
     cursor: pointer;
 }
 
+.square-label {
+    margin: auto;
+}
+
+.square.captured.player1 {
+    background-color: var(--primary-highlight);
+}
+
+.square.captured.player2 {
+    background-color: var(--secondary-highlight);
+}
+
 .edge {
     background-clip: content-box;
     cursor: pointer;
     transition: 50ms ease-out;
 }
 .incoming {
-    background-color: pink;
+    background-color: var(--primary-highlight);
     cursor: pointer;
     transition: 300ms ease-out;
 }

@@ -1,3 +1,5 @@
+import { SquareView } from "../components/SquareView";
+
 export type Coord = [number, number];
 export type Player = 1 | 2;
 
@@ -6,6 +8,7 @@ export type GameState = {
   player1Score: number;
   player2Score: number;
   board: (Square | Edge | Corner)[][];
+  gridLineState: GridLineState;
 };
 
 export type Corner = {
@@ -35,18 +38,28 @@ export type GridLineState = "empty" | "in-progress" | "winner-player1" | "winner
 
 export class Gridlines {
   size: number;
-  gameState: GameState;
-  grid: (Square | Edge | Corner)[][];
+  turn: Player;
+  player1Score: number;
+  player2Score: number;
+  board: Block[][];
+  gridLineState: GridLineState;
 
   constructor(size: number) {
     this.size = size;
-    this.grid = this.initGrid(this.size);
+    this.turn = 1;
+    this.player1Score = 0;
+    this.player2Score = 0;
+    this.board = this.initGrid(this.size);
+    this.gridLineState = "empty";
+  }
 
-    this.gameState = {
-      turn: 1,
-      player1Score: 0,
-      player2Score: 0,
-      board: this.grid.map((r) => [...r]),
+  toJSON(): GameState {
+    return {
+      turn: this.turn,
+      player1Score: this.player1Score,
+      player2Score: this.player2Score,
+      board: this.board.map((r) => [...r]),
+      gridLineState: this.gridLineState,
     };
   }
 
@@ -82,7 +95,8 @@ export class Gridlines {
               square.sidesSelected += 1;
               if (square.sidesSelected >= 4) {
                 square.isCaptured = true;
-                square.capturedBy = this.gameState.turn;
+                square.capturedBy = this.turn;
+                square.capturedBy === 1 ? this.player1Score++ : this.player2Score++;
               }
             },
           };
@@ -96,20 +110,43 @@ export class Gridlines {
   }
 
   get state(): GridLineState {
-    const totalScore = this.gameState.player1Score + this.gameState.player2Score,
+    const totalScore = this.player1Score + this.player2Score,
       totalSquares = this.size * this.size;
     if (totalScore === 0) {
       return "empty";
     } else if (totalScore < totalSquares) {
       return "in-progress";
-    } else if (this.gameState.player1Score > this.gameState.player2Score) {
+    } else if (this.player1Score > this.player2Score) {
       return "winner-player1";
-    } else if (this.gameState.player2Score > this.gameState.player1Score) {
+    } else if (this.player2Score > this.player1Score) {
       return "winner-player2";
     } else {
       return "tie";
     }
   }
+
+
+  move(edge: Edge) {
+    edge.isSelected = true;
+    let hasCaptured = false;
+    for (let [r, c] of edge.neighbors) {
+      const nBlk = this.board[r][c];
+      if (nBlk.blockType === "square") {
+        nBlk.sideClick();
+        if (nBlk.isCaptured) {
+          hasCaptured = true;
+        }
+      }
+    }
+    if (!hasCaptured) {
+      this.turn = this.turn === 1 ? 2 : 1;
+    }
+  }
+
+  updateScore(player: Player){
+    player === 1 ? this.player2Score++ : this.player1Score++
+  }
+  
 
 }
 

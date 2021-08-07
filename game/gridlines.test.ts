@@ -1,8 +1,8 @@
-import { Board, Coord, Gridlines, SquareState } from "./gridlines";
+import { Gridlines, Square } from "./gridlines";
 
 describe("game of gridlines", () => {
   const game = new Gridlines(15);
-
+/* 
   it("game creats a board", () => {
     const game = new Gridlines(15);
     const gridSquares: SquareState[][] = [];
@@ -44,8 +44,19 @@ describe("game of gridlines", () => {
     expect(game.board.grid[4][5].capturedBy).toBe(1)
 
 });
-it("updates score", () => {
+ */
+
+  it("changes turn", () => {
+    game.setTurn(2)
+    expect(game.gameState.turn).toEqual(2)
+  })
+
+  it("counts score", () => {
+
+    const square = game.grid[3][2] as Square
+    square.sidesSelected = 4
     
-})
+    expect(game.gameState.player1Score).toEqual(1)
+  })
 
 });

@@ -23,9 +23,6 @@ export function SquareView(props: SquarePropsType) {
   const style = {
     gridColumnStart: coord[0] + 2,
     gridRowStart: coord[1] + 2,
-    zIndex: 10,
-    backgroundColor: isCaptured ? "var(--board-color)" : "",
-    opacity: "0.2",
   };
 
   useEffect(() => {
@@ -34,13 +31,13 @@ export function SquareView(props: SquarePropsType) {
 
   return (
     <div
-      className={`square`}
+      className={`square ${isCaptured ? "captured" : ""} ${displayText === 1 ? "player1" : displayText === 2 ? "player2" : ""}`}
       ref={squareRef}
       style={style}
       onClick={() => onclick()}
       onMouseMove={(event) => reportPosition(event, coord)}
     >
-      <div>{displayText}</div>
+      <div className="square-label"><p>{displayText}</p></div>
     </div>
   );
 }

@@ -6,10 +6,10 @@ import "../styles/gridlines.css";
 import { BoardView } from "./BoardView";
 
 export default function GridlinesView(props: { size: number }) {
-  const { size } = props;
-  const gridlines: Gridlines = new Gridlines(size);
-  const [game, setGame] = useState<GameState>(gridlines.gameState);
-  const rerender = () => setGame({ ...game });
+  const [gridlines] = useState(() => new Gridlines(props.size));
+  const [game, setGame] = useState<GameState>(() => gridlines.toJSON());
+  const rerender = () => setGame(gridlines.toJSON());
+  
   const [hoveredEdge, setHoveredEdge] = useState<[number, number]>([0, 0]);
 
   const getBlock = (coord: Coord): Square | Edge | Corner => {
@@ -17,24 +17,18 @@ export default function GridlinesView(props: { size: number }) {
     return game.board[x][y];
   };
 
+  // Called by edge and square view
   const clicked = () => {
     const block: Block = getBlock(hoveredEdge);
-    if (block.blockType === "edge") {
-      if (block.isSelected) return;
-      console.log("edge", hoveredEdge);
-      block.isSelected = true;
-      for (let c of block.neighbors) {
-        const nBlk = getBlock(c);
-        if (nBlk.blockType === "square") {
-          nBlk.sideClick();
-        }
-      }
+    if (block.blockType === "edge" && !block.isSelected) {
+      gridlines.move(block);
+      rerender();
+      console.log("rerender");
     }
-    rerender();
-    console.log("rerender");
   };
 
-  const reportPosition = (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => {
+  // Called by SquareView
+  const reportMousePosition = (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => {
     const target = event.target as HTMLElement;
     const horiz = event.clientX - target.offsetLeft;
     const vert = event.clientY - target.offsetTop;
@@ -49,20 +43,24 @@ export default function GridlinesView(props: { size: number }) {
 
     if (k + x !== hx) {
       setHoveredEdge([k + x, i]);
-      rerender();
     } else if (i + y !== hy) {
       setHoveredEdge([k, i + y]);
-      rerender();
     }
+
   };
 
   return (
+    <>
+    <div>{game.turn}</div>
+    <div>{game.player1Score}</div>
+    <div>{game.player2Score}</div>
     <BoardView
       grid={game.board}
       gameState={game}
       clicked={clicked}
-      reportPosition={reportPosition}
+      reportPosition={reportMousePosition}
       hoveredEdge={hoveredEdge}
     />
+    </>
   );
 }
