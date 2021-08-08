@@ -1,52 +1,42 @@
 import React from "react";
-import { Coord, Corner, Edge, GameState, Square } from "../game/gridlines";
+import { BoardPropsType } from "../Types/gridlinesTypes";
 import { CornerView } from "./CornerView";
 import { EdgeView } from "./EdgeView";
 import { SquareView } from "./SquareView";
 
 
 
-export type BoardPropsType = {
-  grid: (Square | Edge | Corner)[][];
-  gameState: GameState;
-  clicked: () => void;
-  reportPosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
-  hoveredEdge: Coord;
-};
-
 export function BoardView(props: BoardPropsType) {
-  const { grid, gameState, clicked, reportPosition, hoveredEdge } = props;
+  const { gameState, clicked, reportMousePosition, hoveredEdge } = props;
 
   return (
     <div id='gridlines' className='board-grid'>
-      {grid.map((row, k) => row.map((blk, i) => {
+      {gameState.board.map((row, c) => row.map((blk, r) => {
         if (blk.blockType === "square") {
-          const { sidesSelected, isCaptured, capturedBy } = blk;
-
           return (
             <SquareView
-              key={k + "" + i}
-              coord={[k, i]}
+              key={c + "" + r}
+              coord={[c, r]}
               onclick={clicked}
-              index={i}
-              sidesSelected={sidesSelected}
-              isCaptured={isCaptured}
-              capturedBy={capturedBy}
-              reportPosition={reportPosition} />
+              index={r}
+              sidesSelected={blk.sidesSelected}
+              isCaptured={blk.isCaptured}
+              capturedBy={blk.capturedBy}
+              reportMousePosition={reportMousePosition} />
           );
         } else if (blk.blockType === "edge") {
-          const { isSelected } = blk;
           const [x, y] = hoveredEdge;
           return (
             <EdgeView
-              key={k + "" + i}
-              isSelected={isSelected}
-              hovered={x === k && y === i}
+              key={c + "" + r}
               onclick={clicked}
-              coord={[k, i]} />
+              hovered={x === c && y === r}
+              isSelected={blk.isSelected}
+              coord={[c, r]} 
+              reportMousePosition={reportMousePosition} />
           );
         } else if (blk.blockType === "corner") {
-          return <CornerView key={k + "" + i} coord={[k, i]} />;
+          return <CornerView key={c + "" + r} coord={[c, r]} />;
         }
       })
       )}

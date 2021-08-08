@@ -1,16 +1,9 @@
 import React from "react";
-import { Coord } from "../game/chess2";
+import { EdgePropsType } from "../Types/gridlinesTypes";
 
-
-export type EdgePropsType = {
-  isSelected: boolean;
-  coord: Coord;
-  hovered: boolean;
-  onclick: (coord: Coord) => void;
-};
 
 export function EdgeView(props: EdgePropsType) {
-  const { coord, onclick, isSelected, hovered } = props;
+  const { coord, onclick, isSelected, hovered, reportMousePosition } = props;
 
   const style = {
     gridColumnStart: coord[0] + 2,
@@ -22,9 +15,8 @@ export function EdgeView(props: EdgePropsType) {
     <div
       className={`edge ${isSelected ? "selected" : ""} ${hovered ? "incoming" : ""}`}
       style={style}
-      onClick={() => {
-        onclick(coord);
-      }}
+      onClick={() => onclick() }
+      onMouseMove={(event) => reportMousePosition(event, coord)}
     ></div>
   );
 }

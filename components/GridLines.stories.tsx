@@ -1,6 +1,5 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react";
 import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
-import { GameState, Gridlines } from "../game/gridlines";
 import GridlinesView from "../components/GridLines";
 
 export default {
@@ -11,4 +10,4 @@ export default {
 const Template: ComponentStory<typeof GridlinesView> = (args) => <GridlinesView {...args} />;
 
 export const GridlinesStory = Template.bind({});
-GridlinesStory.args = {size: 21}
+GridlinesStory.args = {size: 14}

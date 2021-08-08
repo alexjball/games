@@ -1,40 +1,13 @@
-import { SquareView } from "../components/SquareView";
-
-export type Coord = [number, number];
-export type Player = 1 | 2;
-
-export type GameState = {
-  turn: Player | null;
-  player1Score: number;
-  player2Score: number;
-  board: (Square | Edge | Corner)[][];
-  gridLineState: GridLineState;
-};
-
-export type Corner = {
-  blockType: "corner";
-  coord: Coord;
-};
-
-export type Edge = {
-  blockType: "edge";
-  isSelected: boolean;
-  coord: Coord;
-  neighbors: Coord[];
-};
-
-export type Square = {
-  blockType: "square";
-  coord: Coord;
-  isCaptured: boolean;
-  capturedBy: Player | null;
-  sidesSelected: number;
-  sideClick(): void;
-};
-
-export type Block = Square | Edge | Corner;
-
-export type GridLineState = "empty" | "in-progress" | "winner-player1" | "winner-player2" | "tie";
+import {
+  Block,
+  Coord,
+  Corner,
+  Edge,
+  GameState,
+  GridLineState,
+  Player,
+  Square,
+} from "../Types/gridlinesTypes";
 
 export class Gridlines {
   size: number;
@@ -63,44 +36,38 @@ export class Gridlines {
     };
   }
 
+  isEven(num: number) {
+    return num % 2 === 0;
+  }
+
   initGrid(size: number) {
     const gridSquares: (Square | Edge | Corner)[][] = [];
-    for (let i = 0; i < size; i++) {
+    for (let r = 0; r <= size; r++) {
       const row = [];
-      for (let k = 0; k < size; k++) {
-        if (i % 2 === 0 || k % 2 === 0) {
-          if (i % 2 === 0 && k % 2 === 0) {
-            const corner: Corner = {
-              blockType: "corner",
-              coord: [k, i],
-            };
-            row.push(corner);
-          } else {
-            const edge: Edge = {
-              blockType: "edge",
-              coord: [k, i],
-              isSelected: false,
-              neighbors: setNeighbors([k, i]),
-            };
-            row.push(edge);
-          }
+      for (let c = 0; c <= size; c++) {
+        if (this.isEven(r) && this.isEven(c)) {
+          const corner: Corner = {
+            blockType: "corner",
+            coord: [c, r],
+          };
+          row.push(corner);
+        } else if (this.isEven(r) || this.isEven(c)) {
+          const edge: Edge = {
+            blockType: "edge",
+            coord: [c, r],
+            isSelected: false,
+            neighbors: setNeighbors([c, r]),
+          };
+          row.push(edge);
         } else {
           const square: Square = {
             blockType: "square",
-            coord: [k, i],
+            coord: [c, r],
             isCaptured: false,
             capturedBy: null,
             sidesSelected: 0,
-            sideClick: () => {
-              square.sidesSelected += 1;
-              if (square.sidesSelected >= 4) {
-                square.isCaptured = true;
-                square.capturedBy = this.turn;
-                square.capturedBy === 1 ? this.player1Score++ : this.player2Score++;
-              }
-            },
+            // sideClick: () => this.handleSideClick(square),
           };
-
           row.push(square);
         }
       }
@@ -109,7 +76,7 @@ export class Gridlines {
     return gridSquares;
   }
 
-  get state(): GridLineState {
+  gameProgress(): GridLineState {
     const totalScore = this.player1Score + this.player2Score,
       totalSquares = this.size * this.size;
     if (totalScore === 0) {
@@ -125,38 +92,86 @@ export class Gridlines {
     }
   }
 
+  handleSideClick(square: Square) {
+    square.sidesSelected += 1;
+    if (square.sidesSelected >= 4) {
+      this.captureSquare(square);
+    }
+    return square;
+  }
+
+  isSquare(block?: Block): block is Square {
+    return block?.blockType === "square";
+  }
+  isEdge(block?: Block): block is Edge {
+    return block?.blockType === "edge";
+  }
+
+  getSquare(coord: Coord): Square {
+    const [c, r] = coord;
+    const sq = this.board[r][c] as Square;
+    if (!this.isSquare(sq)) {
+      throw Error("coord is not a square");
+    }
+    return sq;
+  }
+
+  getEdge(coord: Coord): Edge{
+    const [c, r] = coord;
+    const edge = this.board[r][c] as Edge;
+    if(!this.isEdge(edge)) {
+      throw Error("coord is not an edge")
+    }
+    return edge; 
+  }
+
+  captureSquare(square: Square) {
+    const isCaptured = true;
+    const capturedBy = this.turn;
+    return { ...square, isCaptured, capturedBy };
+  }
 
   move(edge: Edge) {
     edge.isSelected = true;
     let hasCaptured = false;
-    for (let [r, c] of edge.neighbors) {
-      const nBlk = this.board[r][c];
+    for (let [c, r] of edge.neighbors) {
+      console.log("neighbors", edge.neighbors);
+      let nBlk = this.board[r][c];
       if (nBlk.blockType === "square") {
-        nBlk.sideClick();
+        nBlk = this.handleSideClick(nBlk);
         if (nBlk.isCaptured) {
           hasCaptured = true;
+          this.updateScore(this.turn);
         }
       }
     }
     if (!hasCaptured) {
-      this.turn = this.turn === 1 ? 2 : 1;
+      this.turn = this.updateTurn();
     }
   }
 
-  updateScore(player: Player){
-    player === 1 ? this.player2Score++ : this.player1Score++
+  updateTurn(): Player {
+    const newTurn = this.turn === 1 ? 2 : 1;
+    return newTurn;
   }
-  
 
+  updateScore(player: Player) {
+    player === 1 && this.player1Score++;
+    player === 2 && this.player2Score++;
+  }
+
+  checkScore(num: number) {
+    return num === 1 ? this.player1Score : this.player2Score
+  }
 }
 
 const setNeighbors = (coord: Coord) => {
-  const [k, i]: Coord = coord;
+  const [c, r]: Coord = coord;
   const neighbors: Coord[] = [
-    [k + 1, i],
-    [k, i + 1],
+    [c + 1, r],
+    [c, r + 1],
   ];
-  i > 0 && neighbors.push([k, i - 1]);
-  k > 0 && neighbors.push([k - 1, i]);
+  r > 0 && neighbors.push([c, r - 1]);
+  c > 0 && neighbors.push([c - 1, r]);
   return neighbors;
 };
