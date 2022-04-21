@@ -17,13 +17,8 @@ function findLocation(locations: Location[], square: number[]): number {
 }
 
 export default function Board(props: BoardProps) {
-  const {
-    side,
-    gamestate,
-    shouldShowLastMove,
-    shouldShowValidMoves,
-    onMove,
-  } = props
+  const { side, gamestate, shouldShowLastMove, shouldShowValidMoves, onMove } =
+    props
   const { board, validMoves, lastMove, state } = gamestate
 
   const lastMoveLocations: Location[] =

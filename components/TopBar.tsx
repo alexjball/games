@@ -1,6 +1,3 @@
-import React from "react"
-import { IoVolumeHighOutline, IoVolumeMuteOutline } from "react-icons/io5"
-
 export default function TopBar() {
   return (
     <div className="top-bar">
@@ -18,7 +15,10 @@ export default function TopBar() {
   )
 }
 
-const Link: React.FC<{ href: string }> = ({ href, children }) => (
+const Link = ({
+  href,
+  children,
+}: React.PropsWithChildren<{ href: string }>) => (
   <a className="link springy" target="_blank" href={href} rel="noreferrer">
     {children}
   </a>

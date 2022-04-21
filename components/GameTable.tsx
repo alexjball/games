@@ -21,9 +21,8 @@ export default function GameTable(props: GameTableProps) {
   const { gamestate, onMove, onNewGame, onPass, muted, toggleMute } = props
   const { state } = gamestate
   const [shouldShowLastMove, setShouldShowLastMove] = useState<boolean>(false)
-  const [shouldShowValidMoves, setShouldShowValidMoves] = useState<boolean>(
-    false,
-  )
+  const [shouldShowValidMoves, setShouldShowValidMoves] =
+    useState<boolean>(false)
 
   useEffect(() => {
     if (dimensions.width && dimensions.height) {
