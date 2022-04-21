@@ -5,7 +5,7 @@ import {
   Stone,
   SquareState,
   initialGameState,
-} from "../game/reversi"
+} from "../../lib/reversi"
 
 import Board from "./Board"
 import GameTable from "./GameTable"

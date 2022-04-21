@@ -21,4 +21,4 @@ export const useAudio = () =>
   useSelector(({ audio }: { audio: State }) => audio, shallowEqual)
 
 export const { toggleMute } = slice.actions
-export default slice.reducer
+export const audio = slice.reducer

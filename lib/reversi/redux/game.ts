@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { shallowEqual, useSelector } from "react-redux"
-import { GameState, otherStone, Reversi, Stone } from "../game/reversi"
+import { GameState, otherStone, Reversi, Stone } from "../reversi"
 
 export interface ReduxGameState extends GameState {
   startingStone: Stone
@@ -45,4 +45,5 @@ export const useGame = () =>
   useSelector(({ game }: { game: GameState }) => game, shallowEqual)
 
 export const { move, pass, newGame } = slice.actions
-export default slice.reducer
+const reducer = slice.reducer
+export { reducer as game }

@@ -1,5 +1,5 @@
 import React from "react"
-import { SquareState, Stone } from "../game/reversi"
+import { SquareState, Stone } from "../../lib/reversi"
 import StonePiece from "./StonePiece"
 
 export interface BoardSquareProps {

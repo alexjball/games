@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { GameState, otherStone } from "../game/reversi"
+import { GameState, otherStone } from "../../lib/reversi"
 import MuteButton from "./MuteButton"
 import StonePiece from "./StonePiece"
 

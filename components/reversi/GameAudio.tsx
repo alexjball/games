@@ -1,5 +1,5 @@
 import { Component, createRef, RefObject } from "react"
-import { GameState, Move } from "../game/reversi"
+import { GameState, Move } from "../../lib/reversi"
 import MuteButton from "./MuteButton"
 
 const SOUNDS = {

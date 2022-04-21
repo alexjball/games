@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import useResizeObserver from "use-resize-observer"
-import { GameState } from "../game/reversi"
+import { GameState } from "../../lib/reversi"
 import Board from "./Board"
 import { ControlPanel } from "./GameControls"
 

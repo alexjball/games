@@ -1,13 +1,6 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { ComponentStory, ComponentMeta } from "@storybook/react"
-import {
-  GameState,
-  Stone,
-  SquareState,
-  initialGameState,
-  Location,
-} from "../game/reversi"
-
+import { initialGameState, Location } from "../../lib/reversi"
 import Board from "./Board"
 
 export default {

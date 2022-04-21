@@ -1,4 +1,4 @@
-import { Stone } from "../game/reversi"
+import { Stone } from "../../lib/reversi"
 
 export default function StonePiece(props: { stone: Stone }) {
   const { stone } = props

@@ -6,7 +6,7 @@ import {
   SquareState,
   initialGameState,
   Location,
-} from "../game/reversi"
+} from "../../lib/reversi"
 import { ControlPanel } from "./GameControls"
 
 export default {

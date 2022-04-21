@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { GameState } from "../game/reversi"
+import { GameState } from "../../lib/reversi"
 
 interface Props {
   gameState: GameState

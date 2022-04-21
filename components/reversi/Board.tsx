@@ -1,5 +1,5 @@
 import React from "react"
-import { GameState, Location } from "../game/reversi"
+import { GameState, Location } from "../../lib/reversi"
 import BoardSquare from "./BoardSquare"
 
 export interface BoardProps {

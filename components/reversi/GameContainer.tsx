@@ -2,8 +2,8 @@ import React, { useCallback } from "react"
 import GameTable from "./GameTable"
 import GameAudio from "./GameAudio"
 import ConfirmClose from "./ConfirmClose"
-import { move, newGame, pass, useGame } from "../redux/game"
-import { toggleMute, useAudio } from "../redux/audio"
+import { move, newGame, pass, useGame } from "../../lib/reversi"
+import { toggleMute, useAudio } from "../../lib/reversi"
 import { useDispatch } from "react-redux"
 
 export default function GameContainer() {
