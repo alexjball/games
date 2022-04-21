@@ -1,19 +1,19 @@
-import React from "react";
-import { GameState, Location } from "../game/reversi";
-import BoardSquare from "./BoardSquare";
+import React from "react"
+import { GameState, Location } from "../game/reversi"
+import BoardSquare from "./BoardSquare"
 
 export interface BoardProps {
-  gamestate: GameState;
-  side: number;
-  shouldShowLastMove: boolean;
-  shouldShowValidMoves: boolean;
-  onMove: (r: number, c: number) => void;
+  gamestate: GameState
+  side: number
+  shouldShowLastMove: boolean
+  shouldShowValidMoves: boolean
+  onMove: (r: number, c: number) => void
 }
 
 function findLocation(locations: Location[], square: number[]): number {
   return locations.findIndex(
-    (location) => location[0] === square[0] && location[1] === square[1]
-  );
+    location => location[0] === square[0] && location[1] === square[1],
+  )
 }
 
 export default function Board(props: BoardProps) {
@@ -23,13 +23,13 @@ export default function Board(props: BoardProps) {
     shouldShowLastMove,
     shouldShowValidMoves,
     onMove,
-  } = props;
-  const { board, validMoves, lastMove, state } = gamestate;
+  } = props
+  const { board, validMoves, lastMove, state } = gamestate
 
   const lastMoveLocations: Location[] =
-    lastMove?.map((move) => [move.r, move.c] as Location) ?? [];
+    lastMove?.map(move => [move.r, move.c] as Location) ?? []
 
-  const squares = [];
+  const squares = []
   for (let row = 0; row < board.length; row++) {
     for (let block = 0; block < board.length; block++) {
       squares.push({
@@ -45,15 +45,15 @@ export default function Board(props: BoardProps) {
           shouldShowLastMove &&
           findLocation(lastMoveLocations, [row, block]) == 0,
         onclick: () => {
-          onMove(row, block);
+          onMove(row, block)
         },
-      });
+      })
     }
   }
 
   return (
     <div className="board" style={{ height: side, width: side }}>
-      {squares.map((square) => {
+      {squares.map(square => {
         const {
           row,
           block,
@@ -62,7 +62,7 @@ export default function Board(props: BoardProps) {
           isLastMove,
           isLastPlaced,
           onclick,
-        } = square;
+        } = square
 
         return (
           <BoardSquare
@@ -73,8 +73,8 @@ export default function Board(props: BoardProps) {
             isLastPlaced={isLastPlaced}
             onclick={onclick}
           />
-        );
+        )
       })}
     </div>
-  );
+  )
 }

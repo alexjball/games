@@ -1,19 +1,19 @@
-import React from "react";
-import { SquareState, Stone } from "../game/reversi";
-import StonePiece from "./StonePiece";
+import React from "react"
+import { SquareState, Stone } from "../game/reversi"
+import StonePiece from "./StonePiece"
 
 export interface BoardSquareProps {
-  squarestate: SquareState;
-  isLastMove?: boolean;
-  isValidMove?: boolean;
-  isLastPlaced?: boolean;
-  onclick: () => void;
+  squarestate: SquareState
+  isLastMove?: boolean
+  isValidMove?: boolean
+  isLastPlaced?: boolean
+  onclick: () => void
 }
 
 export default function BoardSquare(props: BoardSquareProps) {
-  const { squarestate, isLastMove, isValidMove, isLastPlaced, onclick } = props;
+  const { squarestate, isLastMove, isValidMove, isLastPlaced, onclick } = props
 
-  const hasDecoration = isValidMove || isLastMove || isLastPlaced;
+  const hasDecoration = isValidMove || isLastMove || isLastPlaced
 
   return (
     <div className="board-square" onClick={onclick} tabIndex={0}>
@@ -31,5 +31,5 @@ export default function BoardSquare(props: BoardSquareProps) {
         />
       )}
     </div>
-  );
+  )
 }

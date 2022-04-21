@@ -1,5 +1,5 @@
-import React from "react";
-import { IoVolumeHighOutline, IoVolumeMuteOutline } from "react-icons/io5";
+import React from "react"
+import { IoVolumeHighOutline, IoVolumeMuteOutline } from "react-icons/io5"
 
 export default function TopBar() {
   return (
@@ -15,19 +15,19 @@ export default function TopBar() {
         </Link>
       </div>
     </div>
-  );
+  )
 }
 
 const Link: React.FC<{ href: string }> = ({ href, children }) => (
   <a className="link springy" target="_blank" href={href} rel="noreferrer">
     {children}
   </a>
-);
+)
 
 function Logo() {
   return (
     <div className="logo">
       RE<span>VER</span>SI
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import "../styles/globals.css";
-import "../styles/game.css";
+import "../styles/globals.css"
+import "../styles/game.css"
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -9,4 +9,4 @@ export const parameters = {
       date: /Date$/,
     },
   },
-};
+}
