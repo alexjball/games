@@ -1,0 +1,8 @@
+.title {
+  color: var(--foreground-color);
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+}

@@ -1,24 +1,24 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from "react"
+import { ComponentStory, ComponentMeta } from "@storybook/react"
 import {
   GameState,
   Stone,
   SquareState,
   initialGameState,
   Location,
-} from "../game/reversi";
-import { ControlPanel } from "./GameControls";
+} from "../../lib/reversi"
+import { ControlPanel } from "./GameControls"
 
 export default {
   title: "GameControl",
   component: ControlPanel,
-} as ComponentMeta<typeof ControlPanel>;
+} as ComponentMeta<typeof ControlPanel>
 
-const Template: ComponentStory<typeof ControlPanel> = (args) => (
+const Template: ComponentStory<typeof ControlPanel> = args => (
   <ControlPanel {...args} />
-);
+)
 
-export const GameControl = Template.bind({});
+export const GameControl = Template.bind({})
 
 const ControlPanelArgs = {
   gamestate: initialGameState(),
@@ -29,6 +29,6 @@ const ControlPanelArgs = {
   pass: () => {},
   title: "button",
   onclick: () => {},
-};
+}
 
-GameControl.args = ControlPanelArgs;
+GameControl.args = ControlPanelArgs

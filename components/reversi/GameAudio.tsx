@@ -1,6 +1,6 @@
-import { Component, createRef, RefObject } from "react";
-import { GameState, Move } from "../game/reversi";
-import MuteButton from "./MuteButton";
+import { Component, createRef, RefObject } from "react"
+import { GameState, Move } from "../../lib/reversi"
+import MuteButton from "./MuteButton"
 
 const SOUNDS = {
   burp1: "/Burp 1.wav",
@@ -14,56 +14,56 @@ const SOUNDS = {
   fart8: "/Fart 8.wav",
   fart9: "/Fart 9.wav",
   fart10: "/Fart 10.wav",
-};
-type Sound = keyof typeof SOUNDS;
+}
+type Sound = keyof typeof SOUNDS
 
-type Props = { gameState: GameState; muted: boolean };
+type Props = { gameState: GameState; muted: boolean }
 
 export default class GameAudio extends Component<Props, {}> {
-  sounds: RefObject<HTMLDivElement>;
+  sounds: RefObject<HTMLDivElement>
 
   constructor(props: Props) {
-    super(props);
-    this.sounds = createRef();
+    super(props)
+    this.sounds = createRef()
   }
 
   componentDidUpdate({ gameState: { lastMove: prev } }: Props) {
-    const curr = this.props.gameState.lastMove;
+    const curr = this.props.gameState.lastMove
 
     if (this.didMove(prev, curr)) {
-      this.playMove();
+      this.playMove()
     }
   }
 
   didMove(prev?: Move, curr?: Move) {
     if (curr && curr.length) {
       if (prev && prev.length) {
-        return curr[0].s !== prev[0].s;
+        return curr[0].s !== prev[0].s
       } else {
-        return true;
+        return true
       }
     } else {
-      return false;
+      return false
     }
   }
 
   playMove() {
-    const options = Object.keys(SOUNDS);
-    const i = Math.floor(Math.random() * options.length);
-    this.play(options[i] as Sound);
+    const options = Object.keys(SOUNDS)
+    const i = Math.floor(Math.random() * options.length)
+    this.play(options[i] as Sound)
   }
 
   play(id: Sound) {
     if (this.props.muted) {
-      return;
+      return
     }
 
     const sound = this.sounds.current?.querySelector(
-      `#${id}`
-    ) as HTMLAudioElement;
+      `#${id}`,
+    ) as HTMLAudioElement
     if (sound) {
-      sound.currentTime = 0;
-      sound.play();
+      sound.currentTime = 0
+      sound.play()
     }
   }
 
@@ -74,6 +74,6 @@ export default class GameAudio extends Component<Props, {}> {
           <audio key={i} id={id} src={src} />
         ))}
       </div>
-    );
+    )
   }
 }

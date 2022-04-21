@@ -15,6 +15,9 @@
     },
     "[typescript]": {
       "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "yaml.schemas": {
+      "https://json.schemastore.org/github-workflow.json": "file:///home/aball/dev/games/.github/workflows/deploy.yml"
     }
   },
   "extensions": {

@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { GameState, otherStone } from "../game/reversi";
-import MuteButton from "./MuteButton";
-import StonePiece from "./StonePiece";
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { GameState, otherStone } from "../../lib/reversi"
+import MuteButton from "./MuteButton"
+import StonePiece from "./StonePiece"
 
 export interface ControlPanelProps {
-  gamestate: GameState;
-  setShouldShowLastMove: any;
-  setShouldShowValidMoves: any;
-  shouldShowLastMove: boolean;
-  shouldShowValidMoves: boolean;
-  side?: number;
-  newGame: () => void;
-  pass: () => void;
-  muted: boolean;
-  toggleMute: () => void;
+  gamestate: GameState
+  setShouldShowLastMove: any
+  setShouldShowValidMoves: any
+  shouldShowLastMove: boolean
+  shouldShowValidMoves: boolean
+  side?: number
+  newGame: () => void
+  pass: () => void
+  muted: boolean
+  toggleMute: () => void
 }
 
 export function ControlPanel(props: ControlPanelProps) {
@@ -27,7 +27,7 @@ export function ControlPanel(props: ControlPanelProps) {
     pass,
     muted,
     toggleMute,
-  } = props;
+  } = props
 
   return (
     <div className="side-panel">
@@ -45,7 +45,7 @@ export function ControlPanel(props: ControlPanelProps) {
           title="pass"
           onclick={() => {
             if (gamestate.state === "in-progress") {
-              pass();
+              pass()
             }
           }}
         />
@@ -56,7 +56,7 @@ export function ControlPanel(props: ControlPanelProps) {
         <MuteButton muted={muted} onClick={toggleMute} />
       </div>
     </div>
-  );
+  )
 }
 
 function Status({ gamestate }: { gamestate: GameState }) {
@@ -65,67 +65,65 @@ function Status({ gamestate }: { gamestate: GameState }) {
       {(() => {
         switch (gamestate.state) {
           case "tie":
-            return "TIE";
+            return "TIE"
           case "winner-black":
-            return "BLACK WINS!";
+            return "BLACK WINS!"
           case "winner-white":
-            return "WHITE WINS!";
+            return "WHITE WINS!"
           case "in-progress":
             if (gamestate.lastMove) {
-              const lastStone = otherStone(
-                gamestate.currentStone
-              ).toUpperCase();
-              const [placed] = gamestate.lastMove;
+              const lastStone = otherStone(gamestate.currentStone).toUpperCase()
+              const [placed] = gamestate.lastMove
               if (placed) {
-                const col = ["A", "B", "C", "D", "E", "F", "G", "H"][placed.c];
-                const row = 8 - placed.r;
-                return `${lastStone} TO ${col}${row}`;
+                const col = ["A", "B", "C", "D", "E", "F", "G", "H"][placed.c]
+                const row = 8 - placed.r
+                return `${lastStone} TO ${col}${row}`
               }
-              return `${lastStone} PASSED`;
+              return `${lastStone} PASSED`
             }
           default:
-            return `${gamestate.currentStone.toUpperCase()}'S TURN`;
+            return `${gamestate.currentStone.toUpperCase()}'S TURN`
         }
       })()}
     </div>
-  );
+  )
 }
 
 export function NewGame(props: { gamestate: GameState; newGame: () => void }) {
   const newGame = useCallback(() => {
     const shouldPrompt =
-      props.gamestate.lastMove && props.gamestate.state === "in-progress";
+      props.gamestate.lastMove && props.gamestate.state === "in-progress"
     if (
       !shouldPrompt ||
       window.confirm("Are you sure you want to end the current game?")
     ) {
-      props.newGame();
+      props.newGame()
     }
-  }, [props]);
-  return <Control title="new game" onclick={newGame} />;
+  }, [props])
+  return <Control title="new game" onclick={newGame} />
 }
 
 export function Control(props: { title: string; onclick: () => void }) {
-  const { title, onclick } = props;
+  const { title, onclick } = props
 
   return (
     <button className="control springy" type="button" onClick={onclick}>
       <div className="control-text">{title}</div>
     </button>
-  );
+  )
 }
 
 export function ScoreDisplay(props: { gamestate: GameState }) {
-  const { blackScore, whiteScore } = props.gamestate;
-  const ref = useRef<HTMLDivElement>(null);
-  const [wrapperWidth, setWrapperWidth] = useState(0);
+  const { blackScore, whiteScore } = props.gamestate
+  const ref = useRef<HTMLDivElement>(null)
+  const [wrapperWidth, setWrapperWidth] = useState(0)
 
-  const { currentStone } = props.gamestate;
+  const { currentStone } = props.gamestate
 
   useEffect(() => {
-    if (!ref.current) return;
-    setWrapperWidth(ref.current.getBoundingClientRect().width);
-  });
+    if (!ref.current) return
+    setWrapperWidth(ref.current.getBoundingClientRect().width)
+  })
 
   return (
     <>
@@ -148,5 +146,5 @@ export function ScoreDisplay(props: { gamestate: GameState }) {
         </div>
       </div>
     </>
-  );
+  )
 }

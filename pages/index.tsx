@@ -1,22 +1,21 @@
-import dynamic from "next/dynamic";
-import { createStore } from "../redux";
-import { Provider } from "react-redux";
-import TopBar from "../components/TopBar";
-import Head from "next/head";
-const GameContainer = dynamic(() => import("../components/GameContainer"), {
-  ssr: false,
-});
+import Head from "next/head"
+import Link from "next/link"
+import styles from "./index.module.css"
 
-export default function Reversi() {
+export default function Home() {
   return (
     <>
       <Head>
-        <title>Reversi</title>
+        <title>Casual Games</title>
       </Head>
-      <Provider store={createStore()}>
-        <TopBar />
-        <GameContainer />
-      </Provider>
+      <div className={styles.container}>
+        <h1 className={styles.title}>Some Casual Games</h1>
+        <Link href="/reversi">
+          <a>
+            <h2>Reversi</h2>
+          </a>
+        </Link>
+      </div>
     </>
-  );
+  )
 }

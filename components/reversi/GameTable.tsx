@@ -1,47 +1,46 @@
-import React, { useEffect, useRef, useState } from "react";
-import useResizeObserver from "use-resize-observer";
-import { GameState } from "../game/reversi";
-import Board from "./Board";
-import { ControlPanel } from "./GameControls";
+import React, { useEffect, useRef, useState } from "react"
+import useResizeObserver from "use-resize-observer"
+import { GameState } from "../../lib/reversi"
+import Board from "./Board"
+import { ControlPanel } from "./GameControls"
 
 interface GameTableProps {
-  gamestate: GameState;
-  onMove: (r: number, c: number) => void;
-  onNewGame: () => void;
-  onPass: () => void;
-  muted: boolean;
-  toggleMute: () => void;
+  gamestate: GameState
+  onMove: (r: number, c: number) => void
+  onNewGame: () => void
+  onPass: () => void
+  muted: boolean
+  toggleMute: () => void
 }
 
 export default function GameTable(props: GameTableProps) {
-  const ref = useRef(null);
-  const dimensions = useResizeObserver({ ref });
-  const [side, setSide] = useState<number | undefined>();
+  const ref = useRef(null)
+  const dimensions = useResizeObserver({ ref })
+  const [side, setSide] = useState<number | undefined>()
 
-  const { gamestate, onMove, onNewGame, onPass, muted, toggleMute } = props;
-  const { state } = gamestate;
-  const [shouldShowLastMove, setShouldShowLastMove] = useState<boolean>(false);
-  const [shouldShowValidMoves, setShouldShowValidMoves] = useState<boolean>(
-    false
-  );
+  const { gamestate, onMove, onNewGame, onPass, muted, toggleMute } = props
+  const { state } = gamestate
+  const [shouldShowLastMove, setShouldShowLastMove] = useState<boolean>(false)
+  const [shouldShowValidMoves, setShouldShowValidMoves] =
+    useState<boolean>(false)
 
   useEffect(() => {
     if (dimensions.width && dimensions.height) {
       const minDimension = dimensions
         ? Math.min(dimensions.width, dimensions.height)
-        : 0;
-      const inset = minDimension * 0.9;
-      setSide(inset);
+        : 0
+      const inset = minDimension * 0.9
+      setSide(inset)
     }
-  }, [dimensions]);
+  }, [dimensions])
 
   const toggleLastMove = () => {
-    setShouldShowLastMove((prev) => !prev);
-  };
+    setShouldShowLastMove(prev => !prev)
+  }
 
   const toggleValidMoves = () => {
-    setShouldShowValidMoves((prev) => !prev);
-  };
+    setShouldShowValidMoves(prev => !prev)
+  }
 
   return (
     <div className="game-table" ref={ref}>
@@ -72,5 +71,5 @@ export default function GameTable(props: GameTableProps) {
       </div>
       <div className="spacer"></div>
     </div>
-  );
+  )
 }

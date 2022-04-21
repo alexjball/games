@@ -1,0 +1,28 @@
+name: Repo Checks
+
+on: ["push", "pull_request"]
+
+jobs:
+  check_code_quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/setup-repo
+
+      - name: Linting
+        if: always()
+        run: yarn lint
+
+      - name: Formatting
+        if: always()
+        run: yarn check-formatting
+
+      - name: Unit Tests
+        if: always()
+        run: yarn test
+
+      - name: Types
+        if: always()
+        run: yarn check-types
