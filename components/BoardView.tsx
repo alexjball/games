@@ -1,4 +1,5 @@
 import React from "react";
+import game from "../redux/game";
 import { BoardPropsType } from "../Types/gridlinesTypes";
 import { CornerView } from "./CornerView";
 import { EdgeView } from "./EdgeView";
@@ -7,12 +8,17 @@ import { SquareView } from "./SquareView";
 
 
 export function BoardView(props: BoardPropsType) {
-  const { gameState, clicked, reportMousePosition, hoveredEdge } = props;
+  const {gridlines, gameState, clicked, reportMousePosition, hoveredEdge } = props;
+
+  const boardGridTemplate = {
+    gridTemplateColumns: `8fr repeat(${Math.ceil(gridlines.size / 2)}, 1fr 8fr)) 1fr`,
+    gridTemplateRows: `8fr repeat(${Math.ceil(gridlines.size / 2)}, 1fr 8fr)) 1fr`,
+  }
 
   return (
-    <div id='gridlines' className='board-grid'>
-      {gameState.board.map((row, c) => row.map((blk, r) => {
-        if (blk.blockType === "square") {
+    <div id='gridlines' className='board-grid' style={boardGridTemplate}>
+      {gameState.board.map((row, r) => row.map((blk, c) => {
+        if (gridlines.isSquare(blk)) {
           return (
             <SquareView
               key={c + "" + r}
@@ -24,7 +30,7 @@ export function BoardView(props: BoardPropsType) {
               capturedBy={blk.capturedBy}
               reportMousePosition={reportMousePosition} />
           );
-        } else if (blk.blockType === "edge") {
+        } else if (gridlines.isEdge(blk)) {
           const [x, y] = hoveredEdge;
           return (
             <EdgeView
@@ -35,7 +41,7 @@ export function BoardView(props: BoardPropsType) {
               coord={[c, r]} 
               reportMousePosition={reportMousePosition} />
           );
-        } else if (blk.blockType === "corner") {
+        } else   {
           return <CornerView key={c + "" + r} coord={[c, r]} />;
         }
       })

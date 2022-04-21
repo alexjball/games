@@ -5,9 +5,10 @@ import { EdgePropsType } from "../Types/gridlinesTypes";
 export function EdgeView(props: EdgePropsType) {
   const { coord, onclick, isSelected, hovered, reportMousePosition } = props;
 
+  const [c, r] = coord
   const style = {
-    gridColumnStart: coord[0] + 2,
-    gridRowStart: coord[1] + 2,
+    gridColumnStart: c + 2,
+    gridRowStart: r + 2,
     zIndex: 10,
   };
 

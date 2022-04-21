@@ -1,3 +1,5 @@
+import { Gridlines } from "../game/gridlines";
+
 export type Coord = [number, number];
 export type Player = 1 | 2;
 
@@ -7,6 +9,7 @@ export type GameState = {
   player2Score: number;
   board: (Square | Edge | Corner)[][];
   gridLineState: GridLineState;
+  hoveredEdge?: Coord;
 };
 
 export type Corner = {
@@ -28,6 +31,8 @@ export type Square = {
   capturedBy: Player | null;
   sidesSelected: number;
 };
+
+export type Direction = -1 | 0 | 1
 
 export type Block = Square | Edge | Corner;
 
@@ -53,8 +58,10 @@ export type EdgePropsType = {
 
 
 export type BoardPropsType = {
+  gridlines: Gridlines;
   gameState: GameState;
   clicked: () => void;
   reportMousePosition: (event: React.MouseEvent<HTMLElement, MouseEvent>, coord: Coord) => void;
   hoveredEdge: Coord;
+
 };

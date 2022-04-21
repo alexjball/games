@@ -66,14 +66,14 @@ describe("game of gridlines", () => {
       capturedBy: null,
       sidesSelected: 0,
     });
-    const capturedSquare = game.captureSquare(square);
-    expect(capturedSquare).toStrictEqual({
-      blockType: "square",
-      coord: [7, 9],
-      isCaptured: true,
-      capturedBy: 1,
-      sidesSelected: 0,
-    });
+    // const capturedSquare = game.captureSquare(square);
+    // expect(capturedSquare).toStrictEqual({
+    //   blockType: "square",
+    //   coord: [7, 9],
+    //   isCaptured: true,
+    //   capturedBy: 1,
+    //   sidesSelected: 0,
+    // });
   });
 
   it("can check for block types", () => {

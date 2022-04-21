@@ -54,12 +54,26 @@
     z-index: 100;
 }
 
+.board-wrapper{
+    margin: auto;
+}
+
 .board-grid{
-    display: block; 
-    height: 80vh; 
-    width: 80vh;  
-    margin: 8vh auto auto auto;  
+    width: 80vh;
+    height: 80vh;
+    margin: auto;
     display: grid; 
-    grid-template-columns: auto repeat(24, 1vh 8vh) auto;
-    grid-template-rows: auto repeat(24, 1vh 8vh) auto;
+    grid-template-columns: 8fr repeat(8, 1fr 8fr) 1fr;
+    grid-template-rows: 8fr repeat(8, 1fr 8fr) 1fr;
+}
+
+
+.control {
+    border-radius: 5em;
+}
+
+.control-panel {
+    width: 15em;
+    margin: auto;
+    text-align: center;
 }
