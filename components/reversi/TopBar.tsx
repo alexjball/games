@@ -1,3 +1,5 @@
+import NextLink from "next/link"
+
 export default function TopBar() {
   return (
     <div className="top-bar">
@@ -7,9 +9,9 @@ export default function TopBar() {
           HOW TO PLAY
         </Link>
         <Link href="https://github.com/alexjball/reversi">ABOUT</Link>
-        <Link href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-          MORE GAMES
-        </Link>
+        <NextLink href="/">
+          <a className="link springy">MORE GAMES</a>
+        </NextLink>
       </div>
     </div>
   )
