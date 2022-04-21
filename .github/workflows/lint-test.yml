@@ -8,12 +8,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup Node
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
-      - run: npm ci
-      - name: Lint and Test
-        run: |
-          npm run lint
-          npm run test
+      - uses: ./.github/actions/setup-repo
+      - name: Lint
+        if: always()
+        run: yarn lint
+      - name: Test
+        if: always()
+        run: yarn test
