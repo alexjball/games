@@ -24,7 +24,7 @@
     "react-dom": "^18.0.0",
     "react-icons": "^4.2.0",
     "react-redux": "^7.2.4",
-    "use-resize-observer": "^7.0.0"
+    "use-resize-observer": "^8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",
@@ -33,7 +33,7 @@
     "@storybook/addon-links": "^6.3.4",
     "@storybook/react": "^6.3.4",
     "@types/jest": "^26.0.24",
-    "@types/react": "17.0.14",
+    "@types/react": "^18.0.6",
     "babel-loader": "^8.2.2",
     "eslint": "7.30.0",
     "eslint-config-next": "11.0.1",
