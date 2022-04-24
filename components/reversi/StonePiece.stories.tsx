@@ -1,11 +1,8 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { ComponentStory, ComponentMeta } from "@storybook/react"
-
 import StonePiece from "./StonePiece"
-import { Stone } from "../../lib/reversi"
 
 export default {
-  title: "StonePiece",
   component: StonePiece,
 } as ComponentMeta<typeof StonePiece>
 

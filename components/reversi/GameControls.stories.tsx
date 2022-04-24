@@ -1,16 +1,9 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { ComponentStory, ComponentMeta } from "@storybook/react"
-import {
-  GameState,
-  Stone,
-  SquareState,
-  initialGameState,
-  Location,
-} from "../../lib/reversi"
+import { initialGameState } from "../../lib/reversi"
 import { ControlPanel } from "./GameControls"
 
 export default {
-  title: "GameControl",
   component: ControlPanel,
 } as ComponentMeta<typeof ControlPanel>
 

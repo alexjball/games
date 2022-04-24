@@ -3,7 +3,6 @@ import React from "react"
 import MuteButton from "./MuteButton"
 
 export default {
-  title: "MuteButton",
   component: MuteButton,
 } as ComponentMeta<typeof MuteButton>
 

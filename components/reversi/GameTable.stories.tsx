@@ -1,18 +1,11 @@
+import { ComponentMeta, ComponentStory } from "@storybook/react"
 import React from "react"
-import { ComponentStory, ComponentMeta } from "@storybook/react"
-import {
-  GameState,
-  Stone,
-  SquareState,
-  initialGameState,
-} from "../../lib/reversi"
-
+import { initialGameState } from "../../lib/reversi"
 import Board from "./Board"
-import GameTable from "./GameTable"
 import { ScoreDisplay } from "./GameControls"
+import GameTable from "./GameTable"
 
 export default {
-  title: "GameTable",
   component: Board,
 } as ComponentMeta<typeof Board>
 
