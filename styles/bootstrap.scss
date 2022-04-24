@@ -1,0 +1,20 @@
+// Customize bootstrap variables. Variables reference values in @imports, e.g.
+// node_modules/bootswatch/dist/superhero/_variables.scss
+//
+// https://getbootstrap.com/docs/5.1/customize/color/#theme-colors
+// https://nextjs.org/docs/basic-features/built-in-css-support#sass-support
+// https://github.com/thomaspark/bootswatch/#via-sass-imports
+
+$body-color: #fefefe;
+// Move Roboto to the front of the list
+$font-family-base: Roboto, system-ui, -apple-system, "Segoe UI",
+  "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+  "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+// 18px on most devices
+$font-size-base: 1.125rem;
+$font-weight-normal: 500;
+$web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap";
+
+@import "bootswatch/dist/superhero/variables";
+@import "bootstrap/scss/bootstrap";
+@import "bootswatch/dist/superhero/bootswatch";
