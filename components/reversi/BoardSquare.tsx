@@ -1,5 +1,6 @@
 import React from "react"
-import { SquareState, Stone } from "../../lib/reversi"
+import { SquareState } from "../../lib/reversi"
+import styles from "./reversi.module.css"
 import StonePiece from "./StonePiece"
 
 export interface BoardSquareProps {
@@ -16,11 +17,11 @@ export default function BoardSquare(props: BoardSquareProps) {
   const hasDecoration = isValidMove || isLastMove || isLastPlaced
 
   return (
-    <div className="board-square" onClick={onclick} tabIndex={0}>
+    <div className={styles["board-square"]} onClick={onclick} tabIndex={0}>
       {squarestate !== "empty" && <StonePiece stone={squarestate} />}
       {hasDecoration && (
         <div
-          className="square-decoration"
+          className={styles["square-decoration"]}
           style={{
             backgroundColor: isValidMove
               ? "#c74d4d"

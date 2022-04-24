@@ -1,7 +1,8 @@
+import classNames from "classnames"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import { GameState, otherStone } from "../../lib/reversi"
 import MuteButton from "./MuteButton"
-import StonePiece from "./StonePiece"
+import styles from "./reversi.module.css"
 
 export interface ControlPanelProps {
   gamestate: GameState
@@ -30,8 +31,8 @@ export function ControlPanel(props: ControlPanelProps) {
   } = props
 
   return (
-    <div className="side-panel">
-      <div className="control-panel">
+    <div className={styles["side-panel"]}>
+      <div className={styles["control-panel"]}>
         <NewGame gamestate={gamestate} newGame={newGame} />
         <Control
           title={`${shouldShowValidMoves ? "hide" : "show"} legal moves`}
@@ -50,7 +51,7 @@ export function ControlPanel(props: ControlPanelProps) {
           }}
         />
       </div>
-      <div className="side-info">
+      <div className={styles["side-info"]}>
         <Status gamestate={gamestate} />
         <ScoreDisplay gamestate={gamestate} />
         <MuteButton muted={muted} onClick={toggleMute} />
@@ -61,7 +62,7 @@ export function ControlPanel(props: ControlPanelProps) {
 
 function Status({ gamestate }: { gamestate: GameState }) {
   return (
-    <div className="status">
+    <div className={styles["status"]}>
       {(() => {
         switch (gamestate.state) {
           case "tie":
@@ -107,8 +108,12 @@ export function Control(props: { title: string; onclick: () => void }) {
   const { title, onclick } = props
 
   return (
-    <button className="control springy" type="button" onClick={onclick}>
-      <div className="control-text">{title}</div>
+    <button
+      className={classNames(styles.control, styles.springy)}
+      type="button"
+      onClick={onclick}
+    >
+      <div className={styles["control-text"]}>{title}</div>
     </button>
   )
 }
@@ -127,21 +132,27 @@ export function ScoreDisplay(props: { gamestate: GameState }) {
 
   return (
     <>
-      <div className="score-display-container" ref={ref}>
+      <div className={styles["score-display-container"]} ref={ref}>
         <div
-          className={`score-item control-text black ${
-            currentStone == "black" ? "turn" : ""
-          }`}
+          className={classNames(
+            styles["score-item"],
+            styles["control-text"],
+            styles.black,
+            currentStone == "black" && styles.turn,
+          )}
         >
-          <div className="score-item-icon"> </div>
+          <div className={styles["score-item-icon"]}> </div>
           <div>Black: {blackScore}</div>
         </div>
         <div
-          className={`score-item control-text white ${
-            currentStone == "white" ? "turn" : ""
-          }`}
+          className={classNames(
+            styles["score-item"],
+            styles["control-text"],
+            styles.white,
+            currentStone == "white" && styles.turn,
+          )}
         >
-          <div className="score-item-icon"> </div>
+          <div className={styles["score-item-icon"]}> </div>
           <div>White: {whiteScore}</div>
         </div>
       </div>

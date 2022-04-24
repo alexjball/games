@@ -1,6 +1,7 @@
 import React from "react"
 import { GameState, Location } from "../../lib/reversi"
 import BoardSquare from "./BoardSquare"
+import styles from "./reversi.module.css"
 
 export interface BoardProps {
   gamestate: GameState
@@ -47,7 +48,7 @@ export default function Board(props: BoardProps) {
   }
 
   return (
-    <div className="board" style={{ height: side, width: side }}>
+    <div className={styles["board"]} style={{ height: side, width: side }}>
       {squares.map(square => {
         const {
           row,

@@ -3,6 +3,7 @@ import useResizeObserver from "use-resize-observer"
 import { GameState } from "../../lib/reversi"
 import Board from "./Board"
 import { ControlPanel } from "./GameControls"
+import styles from "./reversi.module.css"
 
 interface GameTableProps {
   gamestate: GameState
@@ -43,8 +44,8 @@ export default function GameTable(props: GameTableProps) {
   }
 
   return (
-    <div className="game-table" ref={ref}>
-      <div className="spacer"></div>
+    <div className={styles["game-table"]} ref={ref}>
+      <div className={styles["spacer"]}></div>
       <ControlPanel
         gamestate={gamestate}
         setShouldShowLastMove={toggleLastMove}
@@ -59,7 +60,9 @@ export default function GameTable(props: GameTableProps) {
       />
       {/* {state === "winner-white" || ("winner-black" && <div>{state}</div>)} */}
       <div
-        className="board-wrapper" /*  style={{ height: side, width: side }} */
+        className={
+          styles["board-wrapper"]
+        } /*  style={{ height: side, width: side }} */
       >
         <Board
           gamestate={gamestate}
@@ -69,7 +72,7 @@ export default function GameTable(props: GameTableProps) {
           onMove={onMove}
         />
       </div>
-      <div className="spacer"></div>
+      <div className={styles["spacer"]}></div>
     </div>
   )
 }

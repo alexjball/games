@@ -1,5 +1,4 @@
 import type { AppProps } from "next/app"
-import "../styles/game.css"
 import "../styles/globals.css"
 import "../styles/bootstrap.scss"
 
