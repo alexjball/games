@@ -4,7 +4,6 @@ import { initialGameState, Location } from "../../lib/reversi"
 import Board from "./Board"
 
 export default {
-  title: "Board",
   component: Board,
 } as ComponentMeta<typeof Board>
 

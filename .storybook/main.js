@@ -3,5 +3,8 @@ module.exports = {
     "../components/**/*.stories.@(ts|tsx)",
     "../pages/**/*.stories.@(ts|tsx)",
   ],
-  addons: ["@storybook/addon-links", "@storybook/addon-essentials"],
+  addons: ["storybook-addon-next", "@storybook/addon-essentials"],
+  core: {
+    builder: "webpack5",
+  },
 }

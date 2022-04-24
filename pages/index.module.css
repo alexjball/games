@@ -1,8 +1,9 @@
-.title {
-  color: var(--foreground-color);
-}
-
 .container {
   max-width: 500px;
   margin: auto;
+  margin-top: 1rem;
+}
+
+.container a {
+  text-decoration: none;
 }
