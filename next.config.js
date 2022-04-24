@@ -9,4 +9,7 @@ module.exports = {
     dirs: ["components", "game", "pages", "redux", "styles"],
     ignoreDuringBuilds: true,
   },
+  compiler: {
+    styledComponents: true,
+  },
 }

@@ -10,12 +10,20 @@ export default function Home() {
       </Head>
       <div className={styles.container}>
         <h1 className={styles.title}>Some Casual Games</h1>
-        <Link href="/reversi">
-          <a>
-            <h2>Reversi</h2>
-          </a>
-        </Link>
+        <GameLink href="/reversi" label="Reversi" />
+        <GameLink href="/tictactoe" label="TicTacToe" />
       </div>
     </>
   )
 }
+
+const GameLink: React.FC<{ label: string; href: string }> = ({
+  label,
+  href,
+}) => (
+  <Link href={href}>
+    <a>
+      <h2>{label}</h2>
+    </a>
+  </Link>
+)
