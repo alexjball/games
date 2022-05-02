@@ -1,0 +1,13 @@
+overwrite: true
+schema: ${API_URL:http://localhost:3000/api/graphql}
+documents: "lib/**/*.graphql"
+generates:
+  lib/graphql.generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      # - typescript-react-query
+      - typescript-graphql-request
+hooks:
+  afterAllFileWrite:
+    - prettier --write

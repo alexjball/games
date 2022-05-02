@@ -1,0 +1,23 @@
+query TicTacToeState {
+  state {
+    board
+    turn
+    status
+  }
+}
+
+mutation Move($player: Player!, $row: Float!, $col: Float!) {
+  move(player: $player, row: $row, col: $col) {
+    board
+    turn
+    status
+  }
+}
+
+mutation NewGame($start: Player!) {
+  newGame(start: $start) {
+    board
+    turn
+    status
+  }
+}
