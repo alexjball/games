@@ -1,4 +1,10 @@
-import { MoveMutationVariables, Player, Status } from "../graphql.generated"
+import { waitFor } from "@testing-library/react"
+import {
+  MoveMutationVariables,
+  Player,
+  Square,
+  Status,
+} from "../graphql.generated"
 import { testServer } from "../testUtils"
 
 const sdk = testServer()
@@ -40,10 +46,21 @@ it("calculates ties", async () => {
   expect(state.turn).toEqual(Player.O)
 })
 
-it("subscribes to updates", async () => {
+test("subscription recieves initial state", async () => {
   const onUpdate = jest.fn()
   const onError = jest.fn()
   const unsubscribe = await sdk.subscribeToGameState(onUpdate, onError)
+
+  await waitFor(() => expect(onUpdate).toHaveBeenCalledTimes(1))
+  expect(onError).toHaveBeenCalledTimes(0)
+
+  unsubscribe()
+})
+
+it("subscribes to updates", async () => {
+  const onUpdate = jest.fn()
+  const onError = jest.fn()
+  const unsubscribe = sdk.subscribeToGameState(onUpdate, onError)
 
   await applyMoves(
     { player: Player.X, col: 1, row: 1 },
@@ -53,15 +70,20 @@ it("subscribes to updates", async () => {
   unsubscribe()
 
   expect(onError).toHaveBeenCalledTimes(0)
-  expect(onUpdate).toHaveBeenCalledTimes(2)
+  expect(onUpdate).toHaveBeenCalledTimes(3)
 
   let state = onUpdate.mock.calls[0][0].gameState
-  expect(state.turn).toEqual(Player.O)
-  expect(state.board[1][1]).toEqual(Player.X)
+  expect(state.turn).toEqual(Player.X)
+  expect(state.board[1][1]).toEqual(Square.Empty)
+  expect(state.board[0][1]).toEqual(Square.Empty)
 
   state = onUpdate.mock.calls[1][0].gameState
+  expect(state.turn).toEqual(Player.O)
+  expect(state.board[1][1]).toEqual(Square.X)
+
+  state = onUpdate.mock.calls[2][0].gameState
   expect(state.turn).toEqual(Player.X)
-  expect(state.board[0][1]).toEqual(Player.O)
+  expect(state.board[0][1]).toEqual(Square.O)
 })
 
 const applyMoves = async (...moves: MoveMutationVariables[]) => {

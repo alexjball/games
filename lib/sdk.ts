@@ -40,7 +40,7 @@ type Sdk = generated.Sdk & {
   subscribeToGameState(
     update: (state: generated.TicTacToe) => void,
     error?: (e: any) => void,
-  ): Promise<Unsubscribe>
+  ): Unsubscribe
   sseClient: SseClient
   apiUrl: string
 }
@@ -49,7 +49,7 @@ type Unsubscribe = () => void
 class SseClient {
   constructor(private url: string) {}
 
-  async subscribe<T>({
+  subscribe<T>({
     query,
     next,
     error,

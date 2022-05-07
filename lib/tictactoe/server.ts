@@ -3,13 +3,12 @@ import {
   Field,
   Mutation,
   ObjectType,
-  PubSub,
-  PubSubEngine,
   Query,
   Resolver,
   Subscription,
 } from "type-graphql"
 import { Board, Game, Player, Square, Status } from "./game"
+import { pubSub } from "./pubsub"
 
 const game = new Game()
 
@@ -37,7 +36,6 @@ export class TicTacToeResolver {
     @Arg("player") player: Player,
     @Arg("row") row: number,
     @Arg("col") col: number,
-    @PubSub() pubSub: PubSubEngine,
   ) {
     game.move(player, row, col)
     pubSub.publish("STATE_CHANGED", null)
@@ -45,13 +43,18 @@ export class TicTacToeResolver {
   }
 
   @Mutation(() => TicTacToe)
-  newGame(@Arg("start") player: Player, @PubSub() pubSub: PubSubEngine) {
+  newGame(@Arg("start") player: Player) {
     game.newGame(player)
     pubSub.publish("STATE_CHANGED", null)
     return game.state
   }
 
-  @Subscription(() => TicTacToe, { topics: "STATE_CHANGED" })
+  @Subscription(() => TicTacToe, {
+    async *subscribe() {
+      yield
+      yield* pubSub.asyncIterable("STATE_CHANGED")
+    },
+  })
   gameState() {
     return game.state
   }

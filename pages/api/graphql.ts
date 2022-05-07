@@ -9,10 +9,10 @@ const server = createServer<{
 }>({
   schema,
   logging: {
-    debug: console.debug,
-    error: console.error,
+    debug: () => {}, //console.debug,
+    info: () => {}, //console.log,
     warn: console.warn,
-    info: console.log,
+    error: console.error,
   },
 })
 

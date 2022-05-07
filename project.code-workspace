@@ -2,13 +2,13 @@
   "folders": [
     {
       "path": "."
-    },
-    {
-      "path": "../graphql-sse"
-    },
-    {
-      "path": "../type-graphql"
     }
+    // {
+    //   "path": "../graphql-sse"
+    // },
+    // {
+    //   "path": "../type-graphql"
+    // }
   ],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
