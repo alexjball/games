@@ -1,6 +1,5 @@
-import "reflect-metadata"
 import { buildSchemaSync } from "type-graphql"
-import { TicTacToeResolver } from "./tictactoe/server"
+import { TicTacToeResolver } from "./server"
 
 export const schema = buildSchemaSync({
   resolvers: [TicTacToeResolver],

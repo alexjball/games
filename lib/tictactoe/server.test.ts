@@ -40,6 +40,30 @@ it("calculates ties", async () => {
   expect(state.turn).toEqual(Player.O)
 })
 
+it("subscribes to updates", async () => {
+  const onUpdate = jest.fn()
+  const onError = jest.fn()
+  const unsubscribe = await sdk.subscribeToGameState(onUpdate, onError)
+
+  await applyMoves(
+    { player: Player.X, col: 1, row: 1 },
+    { player: Player.O, col: 1, row: 0 },
+  )
+
+  unsubscribe()
+
+  expect(onError).toHaveBeenCalledTimes(0)
+  expect(onUpdate).toHaveBeenCalledTimes(2)
+
+  let state = onUpdate.mock.calls[0][0].gameState
+  expect(state.turn).toEqual(Player.O)
+  expect(state.board[1][1]).toEqual(Player.X)
+
+  state = onUpdate.mock.calls[1][0].gameState
+  expect(state.turn).toEqual(Player.X)
+  expect(state.board[0][1]).toEqual(Player.O)
+})
+
 const applyMoves = async (...moves: MoveMutationVariables[]) => {
   for (const move of moves) {
     await sdk.Move(move)

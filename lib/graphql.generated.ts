@@ -61,6 +61,11 @@ export enum Status {
   XWon = "XWon",
 }
 
+export type Subscription = {
+  __typename?: "Subscription"
+  gameState: TicTacToe
+}
+
 export type TicTacToe = {
   __typename?: "TicTacToe"
   board: Array<Array<Square>>
@@ -73,6 +78,18 @@ export type TicTacToeStateQueryVariables = Exact<{ [key: string]: never }>
 export type TicTacToeStateQuery = {
   __typename?: "Query"
   state: {
+    __typename?: "TicTacToe"
+    board: Array<Array<Square>>
+    turn: Player
+    status: Status
+  }
+}
+
+export type GameStateSubscriptionVariables = Exact<{ [key: string]: never }>
+
+export type GameStateSubscription = {
+  __typename?: "Subscription"
+  gameState: {
     __typename?: "TicTacToe"
     board: Array<Array<Square>>
     turn: Player
@@ -110,32 +127,51 @@ export type NewGameMutation = {
   }
 }
 
+export type FieldsFragment = {
+  __typename?: "TicTacToe"
+  board: Array<Array<Square>>
+  turn: Player
+  status: Status
+}
+
+export const FieldsFragmentDoc = gql`
+  fragment Fields on TicTacToe {
+    board
+    turn
+    status
+  }
+`
 export const TicTacToeStateDocument = gql`
   query TicTacToeState {
     state {
-      board
-      turn
-      status
+      ...Fields
     }
   }
+  ${FieldsFragmentDoc}
+`
+export const GameStateDocument = gql`
+  subscription GameState {
+    gameState {
+      ...Fields
+    }
+  }
+  ${FieldsFragmentDoc}
 `
 export const MoveDocument = gql`
   mutation Move($player: Player!, $row: Float!, $col: Float!) {
     move(player: $player, row: $row, col: $col) {
-      board
-      turn
-      status
+      ...Fields
     }
   }
+  ${FieldsFragmentDoc}
 `
 export const NewGameDocument = gql`
   mutation NewGame($start: Player!) {
     newGame(start: $start) {
-      board
-      turn
-      status
+      ...Fields
     }
   }
+  ${FieldsFragmentDoc}
 `
 
 export type SdkFunctionWrapper = <T>(
@@ -168,6 +204,20 @@ export function getSdk(
           ),
         "TicTacToeState",
         "query",
+      )
+    },
+    GameState(
+      variables?: GameStateSubscriptionVariables,
+      requestHeaders?: Dom.RequestInit["headers"],
+    ): Promise<GameStateSubscription> {
+      return withWrapper(
+        wrappedRequestHeaders =>
+          client.request<GameStateSubscription>(GameStateDocument, variables, {
+            ...requestHeaders,
+            ...wrappedRequestHeaders,
+          }),
+        "GameState",
+        "subscription",
       )
     },
     Move(
