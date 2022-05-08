@@ -14,13 +14,13 @@ const game = new Game()
 
 @ObjectType()
 export class TicTacToe {
-  @Field(type => [[Square]])
+  @Field(() => [[Square]])
   board: Board
 
-  @Field(type => Player)
+  @Field(() => Player)
   turn: Player
 
-  @Field(type => Status)
+  @Field(() => Status)
   status: Status
 }
 

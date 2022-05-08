@@ -1,13 +1,7 @@
 import { waitFor } from "@testing-library/react"
-import {
-  MoveMutationVariables,
-  Player,
-  Square,
-  Status,
-} from "../graphql.generated"
-import { testServer } from "../testUtils"
+import { getSdk, MoveMutationVariables, Player, Square, Status } from "../sdk"
 
-const sdk = testServer()
+const sdk = getSdk()
 
 beforeEach(() => sdk.NewGame({ start: Player.X }))
 
