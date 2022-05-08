@@ -1,5 +1,5 @@
 import { registerEnumType } from "type-graphql"
-import type { TicTacToe } from "./server"
+import type { TicTacToe } from "./tictactoe"
 
 export enum Player {
   X = "X",

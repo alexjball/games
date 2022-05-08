@@ -7,8 +7,8 @@ import {
   Resolver,
   Subscription,
 } from "type-graphql"
+import { pubSub } from "../pubsub"
 import { Board, Game, Player, Square, Status } from "./game"
-import { pubSub } from "./pubsub"
 
 const game = new Game()
 
