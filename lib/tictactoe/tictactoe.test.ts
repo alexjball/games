@@ -1,5 +1,11 @@
 import { waitFor } from "@testing-library/react"
-import { getSdk, MoveMutationVariables, Player, Square, Status } from "../sdk"
+import {
+  getSdk,
+  MoveMutationVariables,
+  Player,
+  Square,
+  Status,
+} from "../sdk/server"
 
 const sdk = getSdk()
 

@@ -1,13 +1,20 @@
 overwrite: true
-schema: ${API_URL:http://localhost:3000/api/graphql}
+schema: ${NEXT_PUBLIC_API_URL:http://localhost:3000/api/graphql}
 documents: "lib/**/*.graphql"
 generates:
-  lib/sdk/graphql.generated.ts:
+  # TODO: is it possible to share type definitions between sdks?
+  lib/sdk/graphql-request.generated.ts:
     plugins:
       - typescript
       - typescript-operations
-      # - typescript-react-query
       - typescript-graphql-request
+  lib/sdk/react-query.generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-query
+    config:
+      fetcher: graphql-request
 hooks:
   afterAllFileWrite:
     - prettier --write
