@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import { createService } from "../service"
+import { createService } from "../utils"
 import { GraphQLClient } from "./GraphQLClient"
 import {
   GameStateDocument,

@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider as Base } from "react-query"
 import { GraphQLClientProvider } from "./sdk/client"
-import { BaseProvider, createProviders } from "./service"
+import { BaseProvider, createProviders } from "./utils"
 
 const queryClient = new QueryClient()
 
