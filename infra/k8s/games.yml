@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: games-deployment
+spec:
+  selector:
+    matchLabels:
+      app: games
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: games
+    spec:
+      containers:
+        - name: games
+          # This relies on having alexjball.com configured as a mirror
+          image: internal.registry/games:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3100
+          resources:
+            limits:
+              memory: "1Gi"
+              cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: games-service
+
+spec:
+  ports:
+    - protocol: TCP
+      name: web
+      port: 80
+      targetPort: 3100
+  selector:
+    app: games
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: games-ingress
+  namespace: default
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: "Host(`games.aballslab.com`)"
+      kind: Rule
+      services:
+        - name: games-service
+          port: 80
