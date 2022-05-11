@@ -9,8 +9,8 @@ spec:
       websecure:
         tls:
           certResolver: leresolver
-      # web:
-      #   redirectTo: websecure
+      web:
+        redirectTo: websecure
     persistence:
       # persists the /data directory
       enabled: true
@@ -24,3 +24,4 @@ spec:
       # Once you get things working, you should remove that whole line altogether.
       # - --certificatesresolvers.leresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory
       - --certificatesresolvers.leresolver.acme.storage=/data/acme.json
+      - --providers.providersthrottleduration=100

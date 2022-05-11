@@ -48,7 +48,7 @@ spec:
     - web
     - websecure
   routes:
-    - match: "Host(`games.aballslab.com`)"
+    - match: "Host(`aballslab.com`) || Host(`games.aballslab.com`)"
       kind: Rule
       services:
         - name: games-service
